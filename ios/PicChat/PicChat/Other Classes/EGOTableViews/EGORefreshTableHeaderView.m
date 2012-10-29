@@ -25,7 +25,7 @@
 //
 
 #import "EGORefreshTableHeaderView.h"
-#import "HONAppDelegate.h"
+#import "PCAppDelegate.h"
 
 #define TEXT_COLOR	 [UIColor blackColor]
 #define FLIP_ANIMATION_DURATION 0.18f
