@@ -1,5 +1,5 @@
 //
-//  PCCameraViewController.h
+//  PCPeopleViewController.h
 //  PicChat
 //
 //  Created by Matthew Holcombe on 10.28.12.
@@ -8,6 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface PCCameraViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+@interface PCPeopleViewController : UIViewController
 
 @end

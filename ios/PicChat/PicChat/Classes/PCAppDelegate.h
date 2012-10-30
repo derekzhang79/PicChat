@@ -55,12 +55,12 @@ extern NSString *const SCSessionStateChangedNotification;
 //+ (BOOL)canPingServers;
 //+ (BOOL)canPingAPIServer;
 //+ (BOOL)canPingParseServer;
-//
-//+ (UIFont *)helveticaNeueFontBold;
-//+ (UIFont *)helveticaNeueFontMedium;
-//
-//+ (UIColor *)blueTxtColor;
-//+ (UIColor *)greyTxtColor;
+
++ (UIFont *)helveticaNeueFontBold;
++ (UIFont *)helveticaNeueFontMedium;
+
++ (UIColor *)blueTxtColor;
++ (UIColor *)greyTxtColor;
 
 #define kUsersAPI @"Users.php"
 #define kMessagesAPI @"Messages.php"

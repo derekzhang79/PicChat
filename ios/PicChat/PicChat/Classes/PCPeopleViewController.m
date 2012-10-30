@@ -1,38 +1,39 @@
 //
-//  PCHistoryViewController.m
+//  PCPeopleViewController.m
 //  PicChat
 //
 //  Created by Matthew Holcombe on 10.28.12.
 //  Copyright (c) 2012 Built in Menlo, LLC. All rights reserved.
 //
 
-#import "PCHistoryViewController.h"
-#import "PCHistoryViewCell.h"
+#import "PCPeopleViewController.h"
+#import "PCPersonViewCell.h"
 #import "PCHeaderView.h"
 
-@interface PCHistoryViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface PCPeopleViewController () <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *pendingChats;
-@property (nonatomic, strong) NSMutableArray *allChats;
+@property (nonatomic, strong) NSMutableArray *familyPeople;
+@property (nonatomic, strong) NSMutableArray *friendPeople;
 @property(nonatomic, strong) UIButton *refreshButton;
-@property (nonatomic) BOOL isNewChats;
+@property (nonatomic) BOOL isFamily;
 @property(nonatomic) BOOL isMoreLoadable;
 @property(nonatomic, strong) NSIndexPath *idxPath;
 @end
 
-@implementation PCHistoryViewController
+@implementation PCPeopleViewController
 
-@synthesize pendingChats = _pendingChats;
-@synthesize allChats = _allChats;
+@synthesize familyPeople = _familyPeople;
+@synthesize friendPeople = _friendPeople;
 
 - (id)init {
 	if ((self = [super init])) {
 		self.view.backgroundColor = [UIColor clearColor];
-		_isNewChats = YES;
+		
+		_isFamily = YES;
 		_isMoreLoadable = YES;
 		
-		_pendingChats = [NSMutableArray array];
-		_allChats = [NSMutableArray array];
+		_familyPeople = [NSMutableArray array];
+		_friendPeople = [NSMutableArray array];
 	}
 	
 	return (self);
@@ -41,7 +42,7 @@
 - (void)loadView {
 	[super loadView];
 	
-	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Chats"];
+	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Friends"];
 	[self.view addSubview:headerView];
 	
 	UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
@@ -76,7 +77,6 @@
 	[super didReceiveMemoryWarning];
 }
 
-
 #pragma mark - Navigation
 - (void)_goRefresh {
 	
@@ -84,29 +84,29 @@
 
 #pragma mark - TableView DataSource Delegates
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (_isNewChats)
-		return ([_pendingChats count] + 2);
+	if (_isFamily)
+		return ([_familyPeople count] + 2);
 	
 	else
-		return ([_allChats count] + 2);
+		return ([_friendPeople count] + 2);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-	PCHistoryViewCell *cell = [tableView dequeueReusableCellWithIdentifier:nil];
+	PCPersonViewCell *cell = [tableView dequeueReusableCellWithIdentifier:nil];
 	
 	if (cell == nil) {
 		if (indexPath.row == 0)
-			cell = [[PCHistoryViewCell alloc] initAsTopCell:_isNewChats];
+			cell = [[PCPersonViewCell alloc] initAsTopCell:_isFamily];
 		
-		else if (indexPath.row == [_pendingChats count] + 1)
-			cell = [[PCHistoryViewCell alloc] initAsBottomCell:_isMoreLoadable];
+		else if (indexPath.row == [_familyPeople count] + 1)
+			cell = [[PCPersonViewCell alloc] initAsBottomCell:_isMoreLoadable];
 		
 		else
-			cell = [[PCHistoryViewCell alloc] initAsChatCell];
+			cell = [[PCPersonViewCell alloc] initAsChatCell];
 	}
 	
-	if (indexPath.row > 0 && indexPath.row < [_pendingChats count] + 1)
-		cell.chatVO = [_pendingChats objectAtIndex:indexPath.row - 1];
+	if (indexPath.row > 0 && indexPath.row < [_familyPeople count] + 1)
+		cell.personVO = [_familyPeople objectAtIndex:indexPath.row - 1];
 	
 	[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 	
@@ -120,9 +120,9 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row < [_pendingChats count] + 1) {
+	if (indexPath.row < [_familyPeople count] + 1) {
 		
-		PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
+		PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
 		return (indexPath);
 	}
 	
@@ -131,25 +131,25 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:NO];
-	[(PCHistoryViewCell *)[tableView cellForRowAtIndexPath:indexPath] didSelect];
+	[(PCPersonViewCell *)[tableView cellForRowAtIndexPath:indexPath] didSelect];
 	
-	PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
+	PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
 	
-//	if ([vo.status isEqualToString:@"Accept"] || [vo.status isEqualToString:@"Waiting"]) {
-//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[HONPhotoViewController alloc] initWithImagePath:vo.imageURL withTitle:vo.subjectName]];
-//		[navigationController setNavigationBarHidden:YES];
-//		[self presentViewController:navigationController animated:YES completion:nil];
-//		
-//	} else if ([vo.status isEqualToString:@"Started"]) {
-//		[self.navigationController pushViewController:[[HONVoteViewController alloc] initWithChallenge:vo] animated:YES];
-//	}
+	//	if ([vo.status isEqualToString:@"Accept"] || [vo.status isEqualToString:@"Waiting"]) {
+	//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[HONPhotoViewController alloc] initWithImagePath:vo.imageURL withTitle:vo.subjectName]];
+	//		[navigationController setNavigationBarHidden:YES];
+	//		[self presentViewController:navigationController animated:YES completion:nil];
+	//
+	//	} else if ([vo.status isEqualToString:@"Started"]) {
+	//		[self.navigationController pushViewController:[[HONVoteViewController alloc] initWithChallenge:vo] animated:YES];
+	//	}
 }
 
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
 	// Return YES if you want the specified item to be editable.
 	
-	return (indexPath.row > 0 && indexPath.row < [_pendingChats count] + 1);
+	return (indexPath.row > 0 && indexPath.row < [_familyPeople count] + 1);
 }
 
 // Override to support editing the table view.

@@ -144,6 +144,8 @@
 			[btn2 setEnabled:NO];
 			[btn3 setSelected:false];
 			[btn3 setEnabled:YES];
+			
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"SHOW_CAMERA" object:nil];
 			break;
 			
 		case 2:

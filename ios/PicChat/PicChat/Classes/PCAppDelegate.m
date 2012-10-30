@@ -20,7 +20,7 @@
 #import "PCTabBarController.h"
 #import "PCHistoryViewController.h"
 #import "PCCameraViewController.h"
-#import "PCFriendsViewController.h"
+#import "PCPeopleViewController.h"
 
 NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:SCSessionStateChangedNotification";
 
@@ -88,6 +88,23 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 + (UIViewController *)appTabBarController {
 	return ([[UIApplication sharedApplication] keyWindow].rootViewController);
+}
+
+
++ (UIFont *)helveticaNeueFontBold {
+	return [UIFont fontWithName:@"HelveticaNeue-Bold" size:18.0];
+}
+
++ (UIFont *)helveticaNeueFontMedium {
+	return [UIFont fontWithName:@"HelveticaNeue-Medium" size:18.0];
+}
+
++ (UIColor *)blueTxtColor {
+	return ([UIColor colorWithRed:0.17647058823529 green:0.33333333333333 blue:0.6078431372549 alpha:1.0]);
+}
+
++ (UIColor *)greyTxtColor {
+	return ([UIColor colorWithWhite:0.482 alpha:1.0]);
 }
 
 
@@ -221,14 +238,14 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.window.backgroundColor = [UIColor whiteColor];
 	
-	UIViewController *historyViewController, *cameraViewController, *friendsViewController;
+	UIViewController *historyViewController, *cameraViewController, *peopleViewController;
 	historyViewController = [[PCHistoryViewController alloc] init];
 	cameraViewController = [[PCCameraViewController alloc] init];
-	friendsViewController = [[PCFriendsViewController alloc] init];
+	peopleViewController = [[PCPeopleViewController alloc] init];
 	
 	UINavigationController *navController1 = [[UINavigationController alloc] initWithRootViewController:historyViewController];
 	UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:cameraViewController];
-	UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:friendsViewController];
+	UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:peopleViewController];
 	
 	[navController1 setNavigationBarHidden:YES];
 	[navController2 setNavigationBarHidden:YES];
@@ -238,6 +255,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.tabBarController.delegate = self;
 	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
 	[self.tabBarController setSelectedIndex:1];
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"SHOW_CAMERA" object:nil];
 	
 	self.window.rootViewController = self.tabBarController;
 	[self.window makeKeyAndVisible];

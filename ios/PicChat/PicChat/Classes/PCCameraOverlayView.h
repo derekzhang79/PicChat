@@ -19,11 +19,11 @@
 
 
 @protocol PCCameraOverlayViewDelegate
-- (void)pcCameraOverlayViewTakePicture:(PCCameraOverlayView *)pcCameraOverlayView;
-- (void)pcCameraOverlayViewChangeCamera:(PCCameraOverlayView *)pcCameraOverlayView;
-- (void)pcCameraOverlayViewShowCameraRoll:(PCCameraOverlayView *)pcCameraOverlayView;
-- (void)pcCameraOverlayViewCloseCamera:(PCCameraOverlayView *)pcCameraOverlayView;
+- (void)cameraOverlayViewTakePicture:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewChangeCamera:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewShowCameraRoll:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewCloseCamera:(PCCameraOverlayView *)cameraOverlayView;
 @optional
-- (void)pcCameraOverlayViewChangeFlash:(PCCameraOverlayView *)pcCameraOverlayView;
-- (void)pcCameraOverlayViewHidePreview:(PCCameraOverlayView *)pcCameraOverlayView;
+- (void)cameraOverlayViewChangeFlash:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewHidePreview:(PCCameraOverlayView *)cameraOverlayView;
 @end
