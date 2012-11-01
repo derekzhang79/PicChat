@@ -115,6 +115,8 @@
 		4CA25A59163F25B6004A5423 /* commonTableRow_nonActive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25A55163F25B6004A5423 /* commonTableRow_nonActive@2x.png */; };
 		4CA25A5C163F327C004A5423 /* PCPersonVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A5B163F327C004A5423 /* PCPersonVO.m */; };
 		4CA25A5F163F32B1004A5423 /* PCPersonViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A5E163F32B1004A5423 /* PCPersonViewCell.m */; };
+		4CA25A6B1641F7E9004A5423 /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A6A1641F7E9004A5423 /* AnimatedGif.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25A6E16420A23004A5423 /* PCChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A6D16420A22004A5423 /* PCChatViewController.m */; };
 		4CD040BB163CCD9200B6CDF1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BA163CCD9200B6CDF1 /* UIKit.framework */; };
 		4CD040BD163CCD9200B6CDF1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BC163CCD9200B6CDF1 /* Foundation.framework */; };
 		4CD040BF163CCD9200B6CDF1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BE163CCD9200B6CDF1 /* CoreGraphics.framework */; };
@@ -391,6 +393,10 @@
 		4CA25A5B163F327C004A5423 /* PCPersonVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCPersonVO.m; sourceTree = "<group>"; };
 		4CA25A5D163F32B1004A5423 /* PCPersonViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCPersonViewCell.h; sourceTree = "<group>"; };
 		4CA25A5E163F32B1004A5423 /* PCPersonViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCPersonViewCell.m; sourceTree = "<group>"; };
+		4CA25A691641F7E9004A5423 /* AnimatedGif.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnimatedGif.h; sourceTree = "<group>"; };
+		4CA25A6A1641F7E9004A5423 /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
+		4CA25A6C16420A22004A5423 /* PCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatViewController.h; sourceTree = "<group>"; };
+		4CA25A6D16420A22004A5423 /* PCChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatViewController.m; sourceTree = "<group>"; };
 		4CD040B6163CCD9200B6CDF1 /* PicChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PicChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CD040BA163CCD9200B6CDF1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4CD040BC163CCD9200B6CDF1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -772,6 +778,8 @@
 				4CA259EE163DF64A004A5423 /* PCHistoryViewController.m */,
 				4CA25A28163F1954004A5423 /* PCHistoryViewCell.h */,
 				4CA25A29163F1955004A5423 /* PCHistoryViewCell.m */,
+				4CA25A6C16420A22004A5423 /* PCChatViewController.h */,
+				4CA25A6D16420A22004A5423 /* PCChatViewController.m */,
 			);
 			name = History;
 			sourceTree = "<group>";
@@ -943,6 +951,15 @@
 			name = Fonts;
 			sourceTree = "<group>";
 		};
+		4CA25A681641F7E8004A5423 /* Animated GIF */ = {
+			isa = PBXGroup;
+			children = (
+				4CA25A691641F7E9004A5423 /* AnimatedGif.h */,
+				4CA25A6A1641F7E9004A5423 /* AnimatedGif.m */,
+			);
+			path = "Animated GIF";
+			sourceTree = "<group>";
+		};
 		4CD040AB163CCD9200B6CDF1 = {
 			isa = PBXGroup;
 			children = (
@@ -1032,6 +1049,7 @@
 		4CD040EB163CCF2F00B6CDF1 /* Other Classes */ = {
 			isa = PBXGroup;
 			children = (
+				4CA25A681641F7E8004A5423 /* Animated GIF */,
 				4CA259F7163DFC35004A5423 /* AFNetworking */,
 				4CA259AB163DD687004A5423 /* DeprecatedHeaders */,
 				4CA258F9163DB8A3004A5423 /* Airship */,
@@ -1236,6 +1254,8 @@
 				4CA25A30163F1EF5004A5423 /* PCHeaderView.m in Sources */,
 				4CA25A5C163F327C004A5423 /* PCPersonVO.m in Sources */,
 				4CA25A5F163F32B1004A5423 /* PCPersonViewCell.m in Sources */,
+				4CA25A6B1641F7E9004A5423 /* AnimatedGif.m in Sources */,
+				4CA25A6E16420A23004A5423 /* PCChatViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

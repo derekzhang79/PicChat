@@ -88,7 +88,6 @@
 	[btn2 setBackgroundImage:btnImageSelected forState:(UIControlStateSelected | UIControlStateDisabled)];
 	[btn2 setTag:1];
 	[btn2 setSelected:true];
-	[btn2 setEnabled:NO];
 	
 	btnImage = [UIImage imageNamed:@"rightIcon_nonActive.png"];
 	btnImageActive = [UIImage imageNamed:@"rightIcon_Active.png"];
@@ -126,11 +125,8 @@
 //														 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
 			
 			[btn1 setSelected:true];
-			[btn1 setEnabled:NO];
 			[btn2 setSelected:false];
-			[btn2 setEnabled:YES];
 			[btn3 setSelected:false];
-			[btn3 setEnabled:YES];
 			break;
 			
 		case 1:
@@ -139,11 +135,8 @@
 //														 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
 			
 			[btn1 setSelected:false];
-			[btn1 setEnabled:YES];
 			[btn2 setSelected:true];
-			[btn2 setEnabled:NO];
 			[btn3 setSelected:false];
-			[btn3 setEnabled:YES];
 			
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"SHOW_CAMERA" object:nil];
 			break;
@@ -154,11 +147,8 @@
 //														 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
 			
 			[btn1 setSelected:false];
-			[btn1 setEnabled:YES];
 			[btn2 setSelected:false];
-			[btn2 setEnabled:YES];
 			[btn3 setSelected:true];
-			[btn3 setEnabled:NO];
 			break;
 	}
 	

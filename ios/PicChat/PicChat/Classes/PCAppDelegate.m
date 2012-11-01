@@ -9,6 +9,8 @@
 #import <Parse/Parse.h>
 
 #import "AFJSONRequestOperation.h"
+#import "AFHTTPClient.h"
+#import "AFHTTPRequestOperation.h"
 #import "Mixpanel.h"
 #import "Parse/Parse.h"
 #import "Reachability.h"
@@ -35,6 +37,18 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize tabBarController = _tabBarController;
 
+
++ (NSString *)apiServerPath {
+	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"server_api"]);
+}
+
++ (NSDictionary *)s3Credentials {
+	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"s3_creds"]);
+}
+
++ (NSString *)facebookCanvasURL {
+	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_url"]);
+}
 
 + (BOOL)isRetina5 {
 	return ([UIScreen mainScreen].scale == 2.f && [UIScreen mainScreen].bounds.size.height == 568.0f);
@@ -217,6 +231,25 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	// If you would like all objects to be private by default, remove this line.
 	[defaultACL setPublicReadAccess:YES];
 	[PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
+	
+	PFQuery *appIDQuery = [PFQuery queryWithClassName:@"AppIDs"];
+	PFObject *appIDObject = [appIDQuery getObjectWithId:@"srHSbLC5Sf"];
+	
+	PFQuery *apiQuery = [PFQuery queryWithClassName:@"APIs"];
+	PFObject *apiObject = [apiQuery getObjectWithId:@"l3MBvtsJQC"];
+	
+	PFQuery *s3Query = [PFQuery queryWithClassName:@"S3Credentials"];
+	PFObject *s3Object = [s3Query getObjectWithId:@"zofEGq6sLT"];
+	
+	PFQuery *fbQuery = [PFQuery queryWithClassName:@"FacebookPaths"];
+	PFObject *fbObject = [fbQuery getObjectWithId:@"E7C1lrIB25"];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:[appIDObject objectForKey:@"appstore_id"] forKey:@"appstore_id"];
+	[[NSUserDefaults standardUserDefaults] setObject:[apiObject objectForKey:@"server_path"] forKey:@"server_api"];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSDictionary dictionaryWithObjectsAndKeys:[s3Object objectForKey:@"key"], @"key", [s3Object objectForKey:@"secret"], @"secret", nil] forKey:@"s3_creds"];
+	[[NSUserDefaults standardUserDefaults] setObject:[fbObject objectForKey:@"canvas_url"] forKey:@"facebook_url"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+	
 
 	int boot_total = 0;
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"])
@@ -265,8 +298,6 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 		[navigationController setNavigationBarHidden:YES];
 		[self.tabBarController presentViewController:navigationController animated:NO completion:nil];
 	}
-	
-	NSLog(@"[FBSession.activeSession] (%d)", FBSession.activeSession.state);
 	
 	return (YES);
 }
@@ -383,14 +414,32 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 - (void)_registerUser {
 	//if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
 	
-	NSURL *url = [NSURL URLWithString:@"http://httpbin.org/ip"];
-	NSURLRequest *request = [NSURLRequest requestWithURL:url];
 	
-	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
-		NSLog(@"IP Address: %@", [JSON valueForKeyPath:@"origin"]);
-	} failure:nil];
+	NSURL *url = [NSURL URLWithString:[PCAppDelegate apiServerPath]];
+	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
 	
-	[operation start];
+	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+									[NSString stringWithFormat:@"%d", 1], @"action",
+									[PCAppDelegate deviceToken], @"token",
+									nil];
+	
+	[httpClient postPath:kUsersAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+		NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+		NSLog(@"Response: %@", text);
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		NSLog(@"%@", [error localizedDescription]);
+	}];
+	
+	
+	
+//	NSURL *url = [NSURL URLWithString:@"http://httpbin.org/ip"];
+//	NSURLRequest *request = [NSURLRequest requestWithURL:url];
+//	
+//	AFJSONRequestOperation *operation = [AFJSONRequestOperation JSONRequestOperationWithRequest:request success:^(NSURLRequest *request, NSHTTPURLResponse *response, id JSON) {
+//		NSLog(@"IP Address: %@", [JSON valueForKeyPath:@"origin"]);
+//	} failure:nil];
+//	
+//	[operation start];
 	
 	
 //	ASIFormDataRequest *userRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", [HONAppDelegate apiServerPath], kUsersAPI]]];

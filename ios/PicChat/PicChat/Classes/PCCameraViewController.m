@@ -7,6 +7,7 @@
 //
 
 #import <AVFoundation/AVFoundation.h>
+#import "AnimatedGif.h"
 
 #import "PCCameraViewController.h"
 
@@ -27,7 +28,7 @@
 
 - (id)init {
 	if ((self = [super init])) {
-		self.view.backgroundColor = [UIColor greenColor];
+		self.view.backgroundColor = [UIColor whiteColor];
 		
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_showCamera:) name:@"SHOW_CAMERA" object:nil];
 	}
@@ -37,12 +38,16 @@
 
 - (void)loadView {
 	[super loadView];
+	
+	NSURL 		* secondUrl       = [NSURL URLWithString:@"http://www.allweb.it/images/4_Humor/emoticon_3d/emoticon_3d_53.gif"];
+	UIImageView * secondAnimation = [AnimatedGif getAnimationForGifAtUrl: secondUrl];
+	
+	[self.view addSubview:secondAnimation];
+	[self _presentCamera];
 }
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	
-	[self _presentCamera];
 }
 
 - (void)didReceiveMemoryWarning {
