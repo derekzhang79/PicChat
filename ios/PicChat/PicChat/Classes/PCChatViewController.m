@@ -7,6 +7,7 @@
 //
 
 #import "PCChatViewController.h"
+#import "PCHeaderView.h"
 
 @interface PCChatViewController ()
 
@@ -15,19 +16,26 @@
 @implementation PCChatViewController
 
 - (id)init {
-	if ((self = [super]))
+	if ((self = [super init])) {
+		
+	}
+	
+	return (self);
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
+- (void)loadView {
+	[super loadView];
+	
+	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Chat"];
+	[self.view addSubview:headerView];
 }
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)viewDidLoad {
+	[super viewDidLoad];
+}
+
+- (void)didReceiveMemoryWarning {
+	[super didReceiveMemoryWarning];
 }
 
 @end

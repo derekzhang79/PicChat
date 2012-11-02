@@ -43,11 +43,11 @@ extern NSString *const SCSessionStateChangedNotification;
 + (BOOL)allowsFBPosting;
 
 + (UIViewController *)appTabBarController;
-//
-//+ (UIImage *)scaleImage:(UIImage *)image toSize:(CGSize)size;
-//+ (UIImage *)scaleImage:(UIImage *)image byFactor:(float)factor;
-//+ (UIImage *)cropImage:(UIImage *)image toRect:(CGRect)rect;
-//
+
++ (UIImage *)scaleImage:(UIImage *)image toSize:(CGSize)size;
++ (UIImage *)scaleImage:(UIImage *)image byFactor:(float)factor;
++ (UIImage *)cropImage:(UIImage *)image toRect:(CGRect)rect;
+
 + (NSArray *)fbPermissions;
 //
 + (BOOL)isRetina5;
@@ -65,5 +65,7 @@ extern NSString *const SCSessionStateChangedNotification;
 #define kUsersAPI @"Users.php"
 #define kMessagesAPI @"Messages.php"
 #define kFriendsAPI @"Friends.php"
+
+#define kPhotoTimelapseIncrement 0.5
 
 @end

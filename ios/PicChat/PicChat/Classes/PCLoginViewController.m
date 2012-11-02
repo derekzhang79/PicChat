@@ -28,7 +28,7 @@
 - (void)loadView {
 	[super loadView];
 	
-	int ind = (arc4random() % 4) + 1;
+//	int ind = (arc4random() % 4) + 1;
 	
 //	[[Mixpanel sharedInstance] track:@"Login Screen"
 //								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
