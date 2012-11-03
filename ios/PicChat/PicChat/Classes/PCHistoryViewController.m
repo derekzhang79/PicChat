@@ -9,6 +9,7 @@
 #import "PCHistoryViewController.h"
 #import "PCHistoryViewCell.h"
 #import "PCHeaderView.h"
+#import "PCChatViewController.h"
 
 @interface PCHistoryViewController () <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic, strong) UITableView *tableView;
@@ -121,8 +122,6 @@
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row < [_pendingChats count] + 1) {
-		
-		PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
 		return (indexPath);
 	}
 	
@@ -133,7 +132,8 @@
 	[tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:NO];
 	[(PCHistoryViewCell *)[tableView cellForRowAtIndexPath:indexPath] didSelect];
 	
-	PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
+	//PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
+	[self.navigationController pushViewController:[[PCChatViewController alloc] init] animated:YES];
 	
 //	if ([vo.status isEqualToString:@"Accept"] || [vo.status isEqualToString:@"Waiting"]) {
 //		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[HONPhotoViewController alloc] initWithImagePath:vo.imageURL withTitle:vo.subjectName]];

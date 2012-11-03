@@ -13,8 +13,12 @@
 #import "PCAppDelegate.h"
 #import "PCCameraViewController.h"
 #import "PCCameraOverlayView.h"
+#import "PCSubmitChatViewController.h"
 
-@interface PCCameraViewController () <PCCameraOverlayViewDelegate>
+#import "ELCAlbumPickerController.h"
+#import "ELCImagePickerController.h"
+
+@interface PCCameraViewController () <UINavigationControllerDelegate, ELCImagePickerControllerDelegate, PCCameraOverlayViewDelegate>
 @property (nonatomic, strong) UIImagePickerController *imagePicker;
 @property (nonatomic, strong) PCCameraOverlayView *cameraOverlayView;
 @property(nonatomic, strong) NSTimer *focusTimer;
@@ -84,16 +88,25 @@
 		}];
 		
 	} else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-		_imagePicker = [[UIImagePickerController alloc] init];
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-		_imagePicker.delegate = self;
-		_imagePicker.allowsEditing = NO;
-		_imagePicker.navigationBarHidden = YES;
-		_imagePicker.toolbarHidden = YES;
-		_imagePicker.wantsFullScreenLayout = NO;
-		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
+		ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] initWithNibName:@"ELCAlbumPickerController" bundle:[NSBundle mainBundle]];
+		ELCImagePickerController *elcPicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
+		[albumController setParent:elcPicker];
+		[elcPicker setDelegate:self];
 		
-		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
+		PCAppDelegate *app = (PCAppDelegate *)[[UIApplication sharedApplication] delegate];
+		[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
+
+		
+//		_imagePicker = [[UIImagePickerController alloc] init];
+//		_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+//		_imagePicker.delegate = self;
+//		_imagePicker.allowsEditing = NO;
+//		_imagePicker.navigationBarHidden = YES;
+//		_imagePicker.toolbarHidden = YES;
+//		_imagePicker.wantsFullScreenLayout = NO;
+//		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
+		
+//		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
 	}
 }
 
@@ -152,15 +165,18 @@
 	
 	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 	
-	if (_imagePicker.sourceType == UIImagePickerControllerSourceTypePhotoLibrary)
-		[self dismissViewControllerAnimated:YES completion:nil];
-	
 	UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
 	image = [image fixOrientation];
 	
-	//[_]
+	[_photos addObject:image];
 	
-	UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
+	if (_photoCounter == 3) {
+		[self dismissViewControllerAnimated:NO completion:^(void) {
+			[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos] animated:YES];
+		}];
+	}
+	
+	//UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:didFinishSavingWithError:contextInfo:), nil);
 	
 //	if (image.size.width > image.size.height) {
 //		float offset = image.size.height * (image.size.height / image.size.width);
@@ -296,6 +312,26 @@
 }
 
 
+#pragma mark - ELCImagePickerController Delegates
+
+- (void)elcImagePickerController:(ELCImagePickerController *)picker didFinishPickingMediaWithInfo:(NSArray *)info {
+	[self dismissViewControllerAnimated:NO completion:nil];
+	
+	for (NSDictionary *dict in info) {
+		UIImage *image = [dict objectForKey:UIImagePickerControllerOriginalImage];
+		[_photos addObject:[image fixOrientation]];
+	}
+	
+	[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos] animated:YES];
+}
+
+- (void)elcImagePickerControllerDidCancel:(ELCImagePickerController *)picker {
+	[self dismissViewControllerAnimated:NO completion:nil];
+//	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+//	[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+}
+
+
 #pragma mark - CameraOverlay Delegates
 - (void)cameraOverlayViewTakePicture:(PCCameraOverlayView *)cameraOverlayView {
 	//[_imagePicker takePicture];
@@ -313,7 +349,23 @@
 }
 
 - (void)cameraOverlayViewShowCameraRoll:(PCCameraOverlayView *)cameraOverlayView {
-	_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+	//_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+	
+	ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] initWithNibName:@"ELCAlbumPickerController" bundle:[NSBundle mainBundle]];
+	ELCImagePickerController *elcPicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
+	[albumController setParent:elcPicker];
+	[elcPicker setDelegate:self];
+	
+	[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
+		[self.navigationController presentViewController:elcPicker animated:NO completion:nil];
+	}];
+	
+	
+//	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[ELCImagePickerController alloc] init]];
+//	[navigationController setNavigationBarHidden:YES];
+//	[self.navigationController presentViewController:navigationController animated:YES completion:nil];
+	
+	//[self.navigationController presentViewController:elcPicker animated:NO completion:nil];
 }
 
 - (void)cameraOverlayViewCloseCamera:(PCCameraOverlayView *)cameraOverlayView {

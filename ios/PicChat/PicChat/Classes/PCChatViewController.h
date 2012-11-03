@@ -8,6 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
+#import "PCChatVO.h"
+
 @interface PCChatViewController : UIViewController
+
+- (id)initWithChatVO:(PCChatVO *)vo;
 
 @end

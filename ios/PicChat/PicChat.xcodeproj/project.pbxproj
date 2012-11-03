@@ -143,6 +143,18 @@
 		4CA25AA01643350A004A5423 /* nextButton_nonActive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25A941643350A004A5423 /* nextButton_nonActive@2x.png */; };
 		4CA25AA216433516004A5423 /* optionsButton_Active.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25AA116433516004A5423 /* optionsButton_Active.png */; };
 		4CA25AA616435C25004A5423 /* UIImage+fixOrientation.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25AA516435C25004A5423 /* UIImage+fixOrientation.m */; };
+		4CA25AC216447056004A5423 /* ELCAlbumPickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25AB516447056004A5423 /* ELCAlbumPickerController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25AC316447056004A5423 /* ELCAlbumPickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25AB616447056004A5423 /* ELCAlbumPickerController.xib */; };
+		4CA25AC416447056004A5423 /* ELCAsset.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25AB816447056004A5423 /* ELCAsset.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25AC516447056004A5423 /* ELCAssetCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25ABA16447056004A5423 /* ELCAssetCell.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25AC616447056004A5423 /* ELCAssetPicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25ABB16447056004A5423 /* ELCAssetPicker.xib */; };
+		4CA25AC716447056004A5423 /* ELCAssetTablePicker.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25ABD16447056004A5423 /* ELCAssetTablePicker.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25AC816447056004A5423 /* ELCAssetTablePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25ABE16447056004A5423 /* ELCAssetTablePicker.xib */; };
+		4CA25AC916447056004A5423 /* ELCImagePickerController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25AC016447056004A5423 /* ELCImagePickerController.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		4CA25ACA16447056004A5423 /* ELCImagePickerController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25AC116447056004A5423 /* ELCImagePickerController.xib */; };
+		4CA25ACD1644DE59004A5423 /* cameraRollOverlay.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25ACB1644DE59004A5423 /* cameraRollOverlay.png */; };
+		4CA25ACE1644DE59004A5423 /* cameraRollOverlay@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25ACC1644DE59004A5423 /* cameraRollOverlay@2x.png */; };
+		4CA25AD11644E7F2004A5423 /* PCSubmitChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25AD01644E7F1004A5423 /* PCSubmitChatViewController.m */; };
 		4CD040BB163CCD9200B6CDF1 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BA163CCD9200B6CDF1 /* UIKit.framework */; };
 		4CD040BD163CCD9200B6CDF1 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BC163CCD9200B6CDF1 /* Foundation.framework */; };
 		4CD040BF163CCD9200B6CDF1 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CD040BE163CCD9200B6CDF1 /* CoreGraphics.framework */; };
@@ -451,6 +463,24 @@
 		4CA25AA116433516004A5423 /* optionsButton_Active.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = optionsButton_Active.png; sourceTree = "<group>"; };
 		4CA25AA416435C25004A5423 /* UIImage+fixOrientation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+fixOrientation.h"; sourceTree = "<group>"; };
 		4CA25AA516435C25004A5423 /* UIImage+fixOrientation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+fixOrientation.m"; sourceTree = "<group>"; };
+		4CA25AB416447056004A5423 /* ELCAlbumPickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELCAlbumPickerController.h; sourceTree = "<group>"; };
+		4CA25AB516447056004A5423 /* ELCAlbumPickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELCAlbumPickerController.m; sourceTree = "<group>"; };
+		4CA25AB616447056004A5423 /* ELCAlbumPickerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ELCAlbumPickerController.xib; sourceTree = "<group>"; };
+		4CA25AB716447056004A5423 /* ELCAsset.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELCAsset.h; sourceTree = "<group>"; };
+		4CA25AB816447056004A5423 /* ELCAsset.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELCAsset.m; sourceTree = "<group>"; };
+		4CA25AB916447056004A5423 /* ELCAssetCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELCAssetCell.h; sourceTree = "<group>"; };
+		4CA25ABA16447056004A5423 /* ELCAssetCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELCAssetCell.m; sourceTree = "<group>"; };
+		4CA25ABB16447056004A5423 /* ELCAssetPicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ELCAssetPicker.xib; sourceTree = "<group>"; };
+		4CA25ABC16447056004A5423 /* ELCAssetTablePicker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELCAssetTablePicker.h; sourceTree = "<group>"; };
+		4CA25ABD16447056004A5423 /* ELCAssetTablePicker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELCAssetTablePicker.m; sourceTree = "<group>"; };
+		4CA25ABE16447056004A5423 /* ELCAssetTablePicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ELCAssetTablePicker.xib; sourceTree = "<group>"; };
+		4CA25ABF16447056004A5423 /* ELCImagePickerController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ELCImagePickerController.h; sourceTree = "<group>"; };
+		4CA25AC016447056004A5423 /* ELCImagePickerController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ELCImagePickerController.m; sourceTree = "<group>"; };
+		4CA25AC116447056004A5423 /* ELCImagePickerController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ELCImagePickerController.xib; sourceTree = "<group>"; };
+		4CA25ACB1644DE59004A5423 /* cameraRollOverlay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = cameraRollOverlay.png; sourceTree = "<group>"; };
+		4CA25ACC1644DE59004A5423 /* cameraRollOverlay@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "cameraRollOverlay@2x.png"; sourceTree = "<group>"; };
+		4CA25ACF1644E7F1004A5423 /* PCSubmitChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCSubmitChatViewController.h; sourceTree = "<group>"; };
+		4CA25AD01644E7F1004A5423 /* PCSubmitChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCSubmitChatViewController.m; sourceTree = "<group>"; };
 		4CD040B6163CCD9200B6CDF1 /* PicChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PicChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4CD040BA163CCD9200B6CDF1 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		4CD040BC163CCD9200B6CDF1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -952,6 +982,8 @@
 				4CA259F2163DF67A004A5423 /* PCCameraViewController.m */,
 				4CA25A25163E4AC5004A5423 /* PCCameraOverlayView.h */,
 				4CA25A26163E4AC5004A5423 /* PCCameraOverlayView.m */,
+				4CA25ACF1644E7F1004A5423 /* PCSubmitChatViewController.h */,
+				4CA25AD01644E7F1004A5423 /* PCSubmitChatViewController.m */,
 			);
 			name = Camera;
 			sourceTree = "<group>";
@@ -1031,6 +1063,8 @@
 		4CA25A72164334A1004A5423 /* Camera */ = {
 			isa = PBXGroup;
 			children = (
+				4CA25ACB1644DE59004A5423 /* cameraRollOverlay.png */,
+				4CA25ACC1644DE59004A5423 /* cameraRollOverlay@2x.png */,
 				4CA25A79164334D1004A5423 /* effectsButton_Active.png */,
 				4CA25A7A164334D1004A5423 /* effectsButton_Active@2x.png */,
 				4CA25A7B164334D1004A5423 /* effectsButton_nonActive.png */,
@@ -1054,6 +1088,27 @@
 				4CA25AA516435C25004A5423 /* UIImage+fixOrientation.m */,
 			);
 			path = "UIImage+fixOrientation";
+			sourceTree = "<group>";
+		};
+		4CA25AB316447056004A5423 /* ELCImagePickerController */ = {
+			isa = PBXGroup;
+			children = (
+				4CA25AB416447056004A5423 /* ELCAlbumPickerController.h */,
+				4CA25AB516447056004A5423 /* ELCAlbumPickerController.m */,
+				4CA25AB616447056004A5423 /* ELCAlbumPickerController.xib */,
+				4CA25AB716447056004A5423 /* ELCAsset.h */,
+				4CA25AB816447056004A5423 /* ELCAsset.m */,
+				4CA25AB916447056004A5423 /* ELCAssetCell.h */,
+				4CA25ABA16447056004A5423 /* ELCAssetCell.m */,
+				4CA25ABB16447056004A5423 /* ELCAssetPicker.xib */,
+				4CA25ABC16447056004A5423 /* ELCAssetTablePicker.h */,
+				4CA25ABD16447056004A5423 /* ELCAssetTablePicker.m */,
+				4CA25ABE16447056004A5423 /* ELCAssetTablePicker.xib */,
+				4CA25ABF16447056004A5423 /* ELCImagePickerController.h */,
+				4CA25AC016447056004A5423 /* ELCImagePickerController.m */,
+				4CA25AC116447056004A5423 /* ELCImagePickerController.xib */,
+			);
+			path = ELCImagePickerController;
 			sourceTree = "<group>";
 		};
 		4CD040AB163CCD9200B6CDF1 = {
@@ -1145,6 +1200,7 @@
 		4CD040EB163CCF2F00B6CDF1 /* Other Classes */ = {
 			isa = PBXGroup;
 			children = (
+				4CA25AB316447056004A5423 /* ELCImagePickerController */,
 				4CA25AA316435C25004A5423 /* UIImage+fixOrientation */,
 				4CA25A681641F7E8004A5423 /* Animated GIF */,
 				4CA259F7163DFC35004A5423 /* AFNetworking */,
@@ -1311,6 +1367,12 @@
 				4CA25A9F1643350A004A5423 /* nextButton_nonActive.png in Resources */,
 				4CA25AA01643350A004A5423 /* nextButton_nonActive@2x.png in Resources */,
 				4CA25AA216433516004A5423 /* optionsButton_Active.png in Resources */,
+				4CA25AC316447056004A5423 /* ELCAlbumPickerController.xib in Resources */,
+				4CA25AC616447056004A5423 /* ELCAssetPicker.xib in Resources */,
+				4CA25AC816447056004A5423 /* ELCAssetTablePicker.xib in Resources */,
+				4CA25ACA16447056004A5423 /* ELCImagePickerController.xib in Resources */,
+				4CA25ACD1644DE59004A5423 /* cameraRollOverlay.png in Resources */,
+				4CA25ACE1644DE59004A5423 /* cameraRollOverlay@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1380,6 +1442,12 @@
 				4CA25A6E16420A23004A5423 /* PCChatViewController.m in Sources */,
 				4CA25A711643176C004A5423 /* PCChatItemVO.m in Sources */,
 				4CA25AA616435C25004A5423 /* UIImage+fixOrientation.m in Sources */,
+				4CA25AC216447056004A5423 /* ELCAlbumPickerController.m in Sources */,
+				4CA25AC416447056004A5423 /* ELCAsset.m in Sources */,
+				4CA25AC516447056004A5423 /* ELCAssetCell.m in Sources */,
+				4CA25AC716447056004A5423 /* ELCAssetTablePicker.m in Sources */,
+				4CA25AC916447056004A5423 /* ELCImagePickerController.m in Sources */,
+				4CA25AD11644E7F2004A5423 /* PCSubmitChatViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
