@@ -152,7 +152,9 @@
 			break;
 	}
 	
-	self.selectedIndex = tabID;
+	if (tabID != 1)
+		self.selectedIndex = tabID;
+	
 	[self.delegate tabBarController:self didSelectViewController:[self.viewControllers objectAtIndex:tabID]];
 }
 

@@ -326,11 +326,13 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.tabBarController = [[PCTabBarController alloc] init];
 	self.tabBarController.delegate = self;
 	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-	[self.tabBarController setSelectedIndex:1];
+	//[self.tabBarController setSelectedIndex:1];
 	//[[NSNotificationCenter defaultCenter] postNotificationName:@"SHOW_CAMERA" object:nil];
 	
 	self.window.rootViewController = self.tabBarController;
 	[self.window makeKeyAndVisible];
+	
+	[self.tabBarController.navigationController pushViewController:[[PCCameraViewController alloc] init] animated:NO];
 	
 	if (![self openSession]) {
 		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
@@ -579,13 +581,21 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
 }
 
-
-
 #pragma mark - TabBarController Delegates
 - (BOOL)tabBarController:(UITabBarController *)tabBarController shouldSelectViewController:(UIViewController *)viewController {
 	//NSLog(@"shouldSelectViewController:[%@]", viewController);
 	
-	return (YES);
+	if (viewController == [[tabBarController viewControllers] objectAtIndex:1]) {
+//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+//		[navigationController setNavigationBarHidden:YES];
+//		[tabBarController presentViewController:navigationController animated:NO completion:nil];
+		
+		[tabBarController.navigationController pushViewController:[[PCCameraViewController alloc] init] animated:NO];
+		
+		return (NO);
+	
+	} else
+		return (YES);
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didSelectViewController:(UIViewController *)viewController {

@@ -34,22 +34,22 @@
 
 - (id)initAsTopCell:(BOOL)isNewList {
 	if ((self = [self init])) {
-		_isNewChats = isNewList;
+//		_isNewChats = isNewList;
 		_bgImgView.image = [UIImage imageNamed:@"headerTableRow.png"];
 		
-		_toggleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 20.0, 169.0, 44.0)];
-		_toggleImgView.image = [UIImage imageNamed:@"toggleChats_new.png"];
-		[self addSubview:_toggleImgView];
-		
-		UIButton *newButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		newButton.frame = CGRectMake(76.0, 25.0, 84.0, 34.0);
-		[newButton addTarget:self action:@selector(_goNew) forControlEvents:UIControlEventTouchUpInside];
-		[self addSubview:newButton];
-		
-		UIButton *allButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		allButton.frame = CGRectMake(161.0, 25.0, 84.0, 34.0);
-		[allButton addTarget:self action:@selector(_goAll) forControlEvents:UIControlEventTouchUpInside];
-		[self addSubview:allButton];
+//		_toggleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 20.0, 169.0, 44.0)];
+//		_toggleImgView.image = [UIImage imageNamed:@"toggleChats_new.png"];
+//		[self addSubview:_toggleImgView];
+//		
+//		UIButton *newButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//		newButton.frame = CGRectMake(76.0, 25.0, 84.0, 34.0);
+//		[newButton addTarget:self action:@selector(_goNew) forControlEvents:UIControlEventTouchUpInside];
+//		[self addSubview:newButton];
+//		
+//		UIButton *allButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//		allButton.frame = CGRectMake(161.0, 25.0, 84.0, 34.0);
+//		[allButton addTarget:self action:@selector(_goAll) forControlEvents:UIControlEventTouchUpInside];
+//		[self addSubview:allButton];
 	}
 	
 	return (self);

@@ -6,11 +6,13 @@
 //  Copyright (c) 2012 Built in Menlo, LLC. All rights reserved.
 //
 
+#import "Facebook.h"
+
 #import "PCPeopleViewController.h"
 #import "PCPersonViewCell.h"
 #import "PCHeaderView.h"
 
-@interface PCPeopleViewController () <UITableViewDataSource, UITableViewDelegate>
+@interface PCPeopleViewController () <UITableViewDataSource, UITableViewDelegate, FBFriendPickerDelegate>
 @property(nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSMutableArray *familyPeople;
 @property (nonatomic, strong) NSMutableArray *friendPeople;
@@ -42,36 +44,96 @@
 - (void)loadView {
 	[super loadView];
 	
-	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Friends"];
-	[self.view addSubview:headerView];
-	
-	UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
-	activityIndicatorView.frame = CGRectMake(284.0, 10.0, 24.0, 24.0);
-	[activityIndicatorView startAnimating];
-	[headerView addSubview:activityIndicatorView];
-	
-	_refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	_refreshButton.frame = CGRectMake(270.0, 0.0, 50.0, 45.0);
-	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_nonActive.png"] forState:UIControlStateNormal];
-	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_Active.png"] forState:UIControlStateHighlighted];
-	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
-	[headerView addSubview:_refreshButton];
-	
-	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64.0) style:UITableViewStylePlain];
-	[_tableView setBackgroundColor:[UIColor clearColor]];
-	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
-	_tableView.rowHeight = 70.0;
-	_tableView.delegate = self;
-	_tableView.dataSource = self;
-	_tableView.userInteractionEnabled = YES;
-	_tableView.scrollsToTop = NO;
-	_tableView.showsVerticalScrollIndicator = YES;
-	[self.view addSubview:_tableView];
+	UIButton *friendsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	friendsButton.frame = CGRectMake(18.0, 338.0, 284.0, 49.0);
+	friendsButton.backgroundColor = [UIColor redColor];
+	[friendsButton addTarget:self action:@selector(_goChallengeFriends) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:friendsButton];
 }
 
-- (void)viewDidLoad {
-	[super viewDidLoad];
+- (void)_goChallengeFriends {
+	
+//	[[Mixpanel sharedInstance] track:@"Pick Challenger - Friend"
+//								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+//												 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
+	
+	[FBRequestConnection startWithGraphPath:@"me/friends" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+		for (NSDictionary *friend in [(NSDictionary *)result objectForKey:@"data"]) {
+			//NSLog(@"FRIEND:[%@]", friend);
+		}
+	}];
+	
+	
+	FBFriendPickerViewController *friendPickerController = [[FBFriendPickerViewController alloc] init];
+	friendPickerController.title = @"Pick Friends";
+	friendPickerController.allowsMultipleSelection = NO;
+	friendPickerController.delegate = self;
+	friendPickerController.sortOrdering = FBFriendDisplayByLastName;
+	friendPickerController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+																				  initWithTitle:@"Cancel!"
+																				  style:UIBarButtonItemStyleBordered
+																				  target:self
+																				  action:@selector(cancelButtonWasPressed:)];
+	
+	friendPickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+																					initWithTitle:@"Done!"
+																					style:UIBarButtonItemStyleBordered
+																					target:self
+																					action:@selector(doneButtonWasPressed:)];
+	[friendPickerController loadData];
+	
+	// Use the modal wrapper method to display the picker.
+	[friendPickerController presentModallyFromViewController:self animated:YES handler:
+	 ^(FBViewController *sender, BOOL donePressed) {
+		 if (!donePressed)
+			 return;
+		 
+		 if (friendPickerController.selection.count == 0) {
+			 [[[UIAlertView alloc] initWithTitle:@"No Friend Selected"
+												  message:@"You need to pick a friend."
+												 delegate:nil
+									 cancelButtonTitle:@"OK"
+									 otherButtonTitles:nil]
+			  show];
+			 
+		 } else {
+			 // submit
+//			 self.filename = [NSString stringWithFormat:@"%@_%@", [HONAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
+//			 self.fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
+//			 self.fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
+			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
+			 
+//			 [self _goFriendChallenge];
+		 }
+	 }];
 }
+	
+//	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Friends"];
+//	[self.view addSubview:headerView];
+//	
+//	UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
+//	activityIndicatorView.frame = CGRectMake(284.0, 10.0, 24.0, 24.0);
+//	[activityIndicatorView startAnimating];
+//	[headerView addSubview:activityIndicatorView];
+//	
+//	_refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//	_refreshButton.frame = CGRectMake(270.0, 0.0, 50.0, 45.0);
+//	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_nonActive.png"] forState:UIControlStateNormal];
+//	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_Active.png"] forState:UIControlStateHighlighted];
+//	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
+//	[headerView addSubview:_refreshButton];
+//	
+//	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64.0) style:UITableViewStylePlain];
+//	[_tableView setBackgroundColor:[UIColor clearColor]];
+//	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+//	_tableView.rowHeight = 70.0;
+//	_tableView.delegate = self;
+//	_tableView.dataSource = self;
+//	_tableView.userInteractionEnabled = YES;
+//	_tableView.scrollsToTop = NO;
+//	_tableView.showsVerticalScrollIndicator = YES;
+//	[self.view addSubview:_tableView];
+
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];
@@ -122,7 +184,7 @@
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (indexPath.row < [_familyPeople count] + 1) {
 		
-		PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
+//		PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
 		return (indexPath);
 	}
 	
@@ -133,7 +195,7 @@
 	[tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:NO];
 	[(PCPersonViewCell *)[tableView cellForRowAtIndexPath:indexPath] didSelect];
 	
-	PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
+//	PCPersonVO *vo = [_familyPeople objectAtIndex:indexPath.row - 1];
 	
 	//	if ([vo.status isEqualToString:@"Accept"] || [vo.status isEqualToString:@"Waiting"]) {
 	//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[HONPhotoViewController alloc] initWithImagePath:vo.imageURL withTitle:vo.subjectName]];

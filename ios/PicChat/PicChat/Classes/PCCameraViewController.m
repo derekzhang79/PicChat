@@ -54,11 +54,12 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
+	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -94,7 +95,9 @@
 		[elcPicker setDelegate:self];
 		
 		PCAppDelegate *app = (PCAppDelegate *)[[UIApplication sharedApplication] delegate];
-		[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
+//		[self.navigationController pushViewController:elcPicker animated:NO];
+		
+		//[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
 
 		
 //		_imagePicker = [[UIImagePickerController alloc] init];
@@ -106,7 +109,7 @@
 //		_imagePicker.wantsFullScreenLayout = NO;
 //		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
 		
-//		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
+		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
 	}
 }
 
@@ -281,22 +284,23 @@
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
-	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
-		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
-		_imagePicker.cameraOverlayView = nil;
-		_imagePicker.navigationBarHidden = YES;
-		_imagePicker.toolbarHidden = YES;
-		_imagePicker.wantsFullScreenLayout = NO;
-		_imagePicker.showsCameraControls = NO;
-		_imagePicker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
-		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
-		
-		[self _showOverlay];
-		
-	} else {
+//	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
+//		_imagePicker.sourceType = UIImagePickerControllerSourceTypeCamera;
+//		_imagePicker.cameraOverlayView = nil;
+//		_imagePicker.navigationBarHidden = YES;
+//		_imagePicker.toolbarHidden = YES;
+//		_imagePicker.wantsFullScreenLayout = NO;
+//		_imagePicker.showsCameraControls = NO;
+//		_imagePicker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+//		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
+//		
+//		[self _showOverlay];
+//		
+//	} else {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
-	}
+//		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+//	}
+	[self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 
@@ -313,9 +317,8 @@
 
 
 #pragma mark - ELCImagePickerController Delegates
-
 - (void)elcImagePickerController:(ELCImagePickerController *)picker didFinishPickingMediaWithInfo:(NSArray *)info {
-	[self dismissViewControllerAnimated:NO completion:nil];
+	//	[picker dismissViewControllerAnimated:NO completion:nil];
 	
 	for (NSDictionary *dict in info) {
 		UIImage *image = [dict objectForKey:UIImagePickerControllerOriginalImage];
@@ -326,9 +329,10 @@
 }
 
 - (void)elcImagePickerControllerDidCancel:(ELCImagePickerController *)picker {
-	[self dismissViewControllerAnimated:NO completion:nil];
-//	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-//	[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+	[self dismissViewControllerAnimated:NO completion:^(void){
+		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+		[self.navigationController popToRootViewControllerAnimated:NO];
+	}];
 }
 
 
@@ -371,7 +375,8 @@
 - (void)cameraOverlayViewCloseCamera:(PCCameraOverlayView *)cameraOverlayView {
 	[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+		//[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+		[self.navigationController popToRootViewControllerAnimated:NO];
 	}];
 }
 

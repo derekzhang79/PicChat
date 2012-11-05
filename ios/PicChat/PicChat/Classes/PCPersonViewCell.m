@@ -34,22 +34,22 @@
 
 - (id)initAsTopCell:(BOOL)isFamilyList {
 	if ((self = [self init])) {
-		_isFamily = isFamilyList;
+//		_isFamily = isFamilyList;
 		_bgImgView.image = [UIImage imageNamed:@"headerTableRow.png"];
 		
-		_toggleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 20.0, 169.0, 44.0)];
-		_toggleImgView.image = [UIImage imageNamed:@"toggleChats_new.png"];
-		[self addSubview:_toggleImgView];
-		
-		UIButton *familyButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		familyButton.frame = CGRectMake(76.0, 25.0, 84.0, 34.0);
-		[familyButton addTarget:self action:@selector(_goFamily) forControlEvents:UIControlEventTouchUpInside];
-		[self addSubview:familyButton];
-		
-		UIButton *friendsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		friendsButton.frame = CGRectMake(161.0, 25.0, 84.0, 34.0);
-		[friendsButton addTarget:self action:@selector(_goFriends) forControlEvents:UIControlEventTouchUpInside];
-		[self addSubview:friendsButton];
+//		_toggleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 20.0, 169.0, 44.0)];
+//		_toggleImgView.image = [UIImage imageNamed:@"toggleChats_new.png"];
+//		[self addSubview:_toggleImgView];
+//		
+//		UIButton *familyButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//		familyButton.frame = CGRectMake(76.0, 25.0, 84.0, 34.0);
+//		[familyButton addTarget:self action:@selector(_goFamily) forControlEvents:UIControlEventTouchUpInside];
+//		[self addSubview:familyButton];
+//		
+//		UIButton *friendsButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//		friendsButton.frame = CGRectMake(161.0, 25.0, 84.0, 34.0);
+//		[friendsButton addTarget:self action:@selector(_goFriends) forControlEvents:UIControlEventTouchUpInside];
+//		[self addSubview:friendsButton];
 	}
 	
 	return (self);
