@@ -11,6 +11,7 @@
 #import "PCPeopleViewController.h"
 #import "PCPersonViewCell.h"
 #import "PCHeaderView.h"
+#import "PCCameraViewController.h"
 
 @interface PCPeopleViewController () <UITableViewDataSource, UITableViewDelegate, FBFriendPickerDelegate>
 @property(nonatomic, strong) UITableView *tableView;
@@ -83,7 +84,7 @@
 	[friendPickerController loadData];
 	
 	// Use the modal wrapper method to display the picker.
-	[friendPickerController presentModallyFromViewController:self animated:YES handler:
+	[friendPickerController presentModallyFromViewController:self animated:NO handler:
 	 ^(FBViewController *sender, BOOL donePressed) {
 		 if (!donePressed)
 			 return;
@@ -97,6 +98,9 @@
 			  show];
 			 
 		 } else {
+			 [self performSelector:@selector(_pushCameraView) withObject:nil afterDelay:0.33];
+			 
+			 
 			 // submit
 //			 self.filename = [NSString stringWithFormat:@"%@_%@", [HONAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
 //			 self.fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
@@ -134,6 +138,10 @@
 //	_tableView.showsVerticalScrollIndicator = YES;
 //	[self.view addSubview:_tableView];
 
+
+- (void)_pushCameraView {
+	[self.navigationController pushViewController:[[PCCameraViewController alloc] init] animated:NO];
+}
 
 - (void)didReceiveMemoryWarning {
 	[super didReceiveMemoryWarning];

@@ -54,7 +54,7 @@
 - (void)viewDidLoad {
 	[super viewDidLoad];
 	
-	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
