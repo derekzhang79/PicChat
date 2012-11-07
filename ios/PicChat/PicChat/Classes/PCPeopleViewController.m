@@ -37,6 +37,8 @@
 		
 		_familyPeople = [NSMutableArray array];
 		_friendPeople = [NSMutableArray array];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_presentFriends:) name:@"PRESENT_FRIENDS" object:nil];
 	}
 	
 	return (self);
@@ -57,59 +59,6 @@
 //	[[Mixpanel sharedInstance] track:@"Pick Challenger - Friend"
 //								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
 //												 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
-	
-	[FBRequestConnection startWithGraphPath:@"me/friends" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
-		for (NSDictionary *friend in [(NSDictionary *)result objectForKey:@"data"]) {
-			//NSLog(@"FRIEND:[%@]", friend);
-		}
-	}];
-	
-	
-	FBFriendPickerViewController *friendPickerController = [[FBFriendPickerViewController alloc] init];
-	friendPickerController.title = @"Pick Friends";
-	friendPickerController.allowsMultipleSelection = NO;
-	friendPickerController.delegate = self;
-	friendPickerController.sortOrdering = FBFriendDisplayByLastName;
-	friendPickerController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
-																				  initWithTitle:@"Cancel!"
-																				  style:UIBarButtonItemStyleBordered
-																				  target:self
-																				  action:@selector(cancelButtonWasPressed:)];
-	
-	friendPickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
-																					initWithTitle:@"Done!"
-																					style:UIBarButtonItemStyleBordered
-																					target:self
-																					action:@selector(doneButtonWasPressed:)];
-	[friendPickerController loadData];
-	
-	// Use the modal wrapper method to display the picker.
-	[friendPickerController presentModallyFromViewController:self animated:NO handler:
-	 ^(FBViewController *sender, BOOL donePressed) {
-		 if (!donePressed)
-			 return;
-		 
-		 if (friendPickerController.selection.count == 0) {
-			 [[[UIAlertView alloc] initWithTitle:@"No Friend Selected"
-												  message:@"You need to pick a friend."
-												 delegate:nil
-									 cancelButtonTitle:@"OK"
-									 otherButtonTitles:nil]
-			  show];
-			 
-		 } else {
-			 [self performSelector:@selector(_pushCameraView) withObject:nil afterDelay:0.33];
-			 
-			 
-			 // submit
-//			 self.filename = [NSString stringWithFormat:@"%@_%@", [HONAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
-//			 self.fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
-//			 self.fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
-			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
-			 
-//			 [self _goFriendChallenge];
-		 }
-	 }];
 }
 	
 //	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Friends"];
@@ -149,6 +98,69 @@
 
 #pragma mark - Navigation
 - (void)_goRefresh {
+	
+}
+
+#pragma mark - Notifications
+- (void)_presentFriends:(NSNotification *)notification {
+	[FBRequestConnection startWithGraphPath:@"me/friends" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+		for (NSDictionary *friend in [(NSDictionary *)result objectForKey:@"data"]) {
+			//NSLog(@"FRIEND:[%@]", friend);
+		}
+	}];
+	
+	FBFriendPickerViewController *friendPickerController = [[FBFriendPickerViewController alloc] init];
+	friendPickerController.title = @"Pick Friends";
+	friendPickerController.allowsMultipleSelection = NO;
+	friendPickerController.delegate = nil;
+	friendPickerController.sortOrdering = FBFriendDisplayByLastName;
+	friendPickerController.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc]
+																				  initWithTitle:@"Cancel!"
+																				  style:UIBarButtonItemStyleBordered
+																				  target:self
+																				  action:@selector(cancelButtonWasPressed:)];
+	
+	friendPickerController.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc]
+																					initWithTitle:@"Done!"
+																					style:UIBarButtonItemStyleBordered
+																					target:self
+																					action:@selector(doneButtonWasPressed:)];
+	[friendPickerController loadData];
+	
+	// Use the modal wrapper method to display the picker.
+	[friendPickerController presentModallyFromViewController:self animated:NO handler:
+	 ^(FBViewController *sender, BOOL donePressed) {
+		 if (!donePressed)
+			 return;
+		 
+		 if (friendPickerController.selection.count == 0) {
+			 [[[UIAlertView alloc] initWithTitle:@"No Friend Selected"
+												  message:@"You need to pick a friend."
+												 delegate:nil
+									 cancelButtonTitle:@"OK"
+									 otherButtonTitles:nil]
+			  show];
+			 
+		 } else {
+			 //[self performSelector:@selector(_pushCameraView) withObject:nil afterDelay:0.33];
+			 
+			 
+			 // submit
+			 //			 self.filename = [NSString stringWithFormat:@"%@_%@", [HONAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
+			 //			 self.fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
+			 //			 self.fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
+			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
+			 
+			 //			 [self _goFriendChallenge];
+		 }
+	 }];
+}
+
+- (void)cancelButtonWasPressed:(id)sender {
+	
+}
+
+- (void)doneButtonWasPressed:(id)sender {
 	
 }
 

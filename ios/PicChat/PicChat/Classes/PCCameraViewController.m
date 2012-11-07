@@ -46,6 +46,9 @@
 
 - (void)loadView {
 	[super loadView];
+	NSLog(@"loadView");
+	
+	//[self _presentCamera];
 	
 //	UIImageView *secondAnimation = [AnimatedGif getAnimationForGifAtUrl:[NSURL URLWithString:@"http://www.allweb.it/images/4_Humor/emoticon_3d/emoticon_3d_53.gif"]];
 //	[self.view addSubview:secondAnimation];
@@ -53,13 +56,16 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	NSLog(@"viewDidLoad");
 	
-	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.25];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	NSLog(@"viewDidAppear");
+	
+	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -95,7 +101,7 @@
 		[elcPicker setDelegate:self];
 		
 		PCAppDelegate *app = (PCAppDelegate *)[[UIApplication sharedApplication] delegate];
-//		[self.navigationController pushViewController:elcPicker animated:NO];
+		[self.navigationController pushViewController:elcPicker animated:NO];
 		
 		//[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
 
@@ -109,7 +115,7 @@
 //		_imagePicker.wantsFullScreenLayout = NO;
 //		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
 		
-		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
+//		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
 	}
 }
 
@@ -298,9 +304,9 @@
 //		
 //	} else {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-//		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 //	}
-	[self.navigationController popToRootViewControllerAnimated:NO];
+//[self.navigationController popToRootViewControllerAnimated:NO];
 }
 
 

@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4C1912711649AAFB00A11555 /* PCTabsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912701649AAFB00A11555 /* PCTabsView.m */; };
+		4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912741649AB1800A11555 /* PCAppRootViewController.m */; };
 		4CA258DD163DB7ED004A5423 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CA163DB7ED004A5423 /* Accounts.framework */; };
 		4CA258DE163DB7ED004A5423 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CB163DB7ED004A5423 /* AdSupport.framework */; };
 		4CA258DF163DB7ED004A5423 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CC163DB7ED004A5423 /* AssetsLibrary.framework */; };
@@ -169,6 +171,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4C19126F1649AAFA00A11555 /* PCTabsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCTabsView.h; sourceTree = "<group>"; };
+		4C1912701649AAFB00A11555 /* PCTabsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCTabsView.m; sourceTree = "<group>"; };
+		4C1912731649AB1800A11555 /* PCAppRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCAppRootViewController.h; sourceTree = "<group>"; };
+		4C1912741649AB1800A11555 /* PCAppRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCAppRootViewController.m; sourceTree = "<group>"; };
 		4CA258CA163DB7ED004A5423 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		4CA258CB163DB7ED004A5423 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4CA258CC163DB7ED004A5423 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -851,6 +857,10 @@
 				4CA259CC163DF2E3004A5423 /* PCTabBarController.m */,
 				4CA25A2E163F1EF5004A5423 /* PCHeaderView.h */,
 				4CA25A2F163F1EF5004A5423 /* PCHeaderView.m */,
+				4C19126F1649AAFA00A11555 /* PCTabsView.h */,
+				4C1912701649AAFB00A11555 /* PCTabsView.m */,
+				4C1912731649AB1800A11555 /* PCAppRootViewController.h */,
+				4C1912741649AB1800A11555 /* PCAppRootViewController.m */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -1448,6 +1458,8 @@
 				4CA25AC716447056004A5423 /* ELCAssetTablePicker.m in Sources */,
 				4CA25AC916447056004A5423 /* ELCImagePickerController.m in Sources */,
 				4CA25AD11644E7F2004A5423 /* PCSubmitChatViewController.m in Sources */,
+				4C1912711649AAFB00A11555 /* PCTabsView.m in Sources */,
+				4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
