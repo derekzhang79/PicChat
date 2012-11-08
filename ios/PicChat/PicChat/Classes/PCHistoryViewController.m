@@ -10,6 +10,9 @@
 #import "PCHistoryViewCell.h"
 #import "PCHeaderView.h"
 #import "PCChatViewController.h"
+#import "PCAppDelegate.h"
+#import "AFHTTPClient.h"
+#import "AFHTTPRequestOperation.h"
 
 @interface PCHistoryViewController () <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic, strong) UITableView *tableView;
@@ -77,6 +80,25 @@
 	[super didReceiveMemoryWarning];
 }
 
+- (void)_retrieveChats {
+	//if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
+	
+	
+	NSURL *url = [NSURL URLWithString:[PCAppDelegate apiServerPath]];
+	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
+	
+	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+									[NSString stringWithFormat:@"%d", 1], @"action",
+									[PCAppDelegate deviceToken], @"token",
+									nil];
+	
+	[httpClient postPath:kMessagesAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+		NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+		NSLog(@"Response: %@", text);
+	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+		NSLog(@"%@", [error localizedDescription]);
+	}];
+}
 
 #pragma mark - Navigation
 - (void)_goRefresh {

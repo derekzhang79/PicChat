@@ -25,10 +25,10 @@ extern NSString *const SCSessionStateChangedNotification;
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
 
-//+ (NSString *)apiServerPath;
-//+ (NSDictionary *)s3Credentials;
-//+ (NSString *)facebookCanvasURL;
-//
++ (NSString *)apiServerPath;
++ (NSDictionary *)s3Credentials;
++ (NSString *)facebookCanvasURL;
+
 - (BOOL)openSession;
 + (void)writeDeviceToken:(NSString *)token;
 + (NSString *)deviceToken;
