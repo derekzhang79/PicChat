@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4C1912711649AAFB00A11555 /* PCTabsView.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912701649AAFB00A11555 /* PCTabsView.m */; };
+		4C06F485164CB08200E7E906 /* PCChatEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F484164CB08200E7E906 /* PCChatEntryViewCell.m */; };
 		4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912741649AB1800A11555 /* PCAppRootViewController.m */; };
 		4CA258DD163DB7ED004A5423 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CA163DB7ED004A5423 /* Accounts.framework */; };
 		4CA258DE163DB7ED004A5423 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CB163DB7ED004A5423 /* AdSupport.framework */; };
@@ -119,7 +119,7 @@
 		4CA25A5F163F32B1004A5423 /* PCPersonViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A5E163F32B1004A5423 /* PCPersonViewCell.m */; };
 		4CA25A6B1641F7E9004A5423 /* AnimatedGif.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A6A1641F7E9004A5423 /* AnimatedGif.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		4CA25A6E16420A23004A5423 /* PCChatViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A6D16420A22004A5423 /* PCChatViewController.m */; };
-		4CA25A711643176C004A5423 /* PCChatItemVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A701643176C004A5423 /* PCChatItemVO.m */; };
+		4CA25A711643176C004A5423 /* PCChatEntryVO.m in Sources */ = {isa = PBXBuildFile; fileRef = 4CA25A701643176C004A5423 /* PCChatEntryVO.m */; };
 		4CA25A76164334B3004A5423 /* optionsButton_Active@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25A73164334B3004A5423 /* optionsButton_Active@2x.png */; };
 		4CA25A77164334B3004A5423 /* optionsButton_nonActive.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25A74164334B3004A5423 /* optionsButton_nonActive.png */; };
 		4CA25A78164334B3004A5423 /* optionsButton_nonActive@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4CA25A75164334B3004A5423 /* optionsButton_nonActive@2x.png */; };
@@ -171,8 +171,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		4C19126F1649AAFA00A11555 /* PCTabsView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCTabsView.h; sourceTree = "<group>"; };
-		4C1912701649AAFB00A11555 /* PCTabsView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCTabsView.m; sourceTree = "<group>"; };
+		4C06F483164CB08200E7E906 /* PCChatEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatEntryViewCell.h; sourceTree = "<group>"; };
+		4C06F484164CB08200E7E906 /* PCChatEntryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatEntryViewCell.m; sourceTree = "<group>"; };
 		4C1912731649AB1800A11555 /* PCAppRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCAppRootViewController.h; sourceTree = "<group>"; };
 		4C1912741649AB1800A11555 /* PCAppRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCAppRootViewController.m; sourceTree = "<group>"; };
 		4CA258CA163DB7ED004A5423 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -441,8 +441,8 @@
 		4CA25A6A1641F7E9004A5423 /* AnimatedGif.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AnimatedGif.m; sourceTree = "<group>"; };
 		4CA25A6C16420A22004A5423 /* PCChatViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatViewController.h; sourceTree = "<group>"; };
 		4CA25A6D16420A22004A5423 /* PCChatViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatViewController.m; sourceTree = "<group>"; };
-		4CA25A6F1643176C004A5423 /* PCChatItemVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatItemVO.h; sourceTree = "<group>"; };
-		4CA25A701643176C004A5423 /* PCChatItemVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatItemVO.m; sourceTree = "<group>"; };
+		4CA25A6F1643176C004A5423 /* PCChatEntryVO.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatEntryVO.h; sourceTree = "<group>"; };
+		4CA25A701643176C004A5423 /* PCChatEntryVO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatEntryVO.m; sourceTree = "<group>"; };
 		4CA25A73164334B3004A5423 /* optionsButton_Active@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "optionsButton_Active@2x.png"; sourceTree = "<group>"; };
 		4CA25A74164334B3004A5423 /* optionsButton_nonActive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = optionsButton_nonActive.png; sourceTree = "<group>"; };
 		4CA25A75164334B3004A5423 /* optionsButton_nonActive@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "optionsButton_nonActive@2x.png"; sourceTree = "<group>"; };
@@ -857,8 +857,6 @@
 				4CA259CC163DF2E3004A5423 /* PCTabBarController.m */,
 				4CA25A2E163F1EF5004A5423 /* PCHeaderView.h */,
 				4CA25A2F163F1EF5004A5423 /* PCHeaderView.m */,
-				4C19126F1649AAFA00A11555 /* PCTabsView.h */,
-				4C1912701649AAFB00A11555 /* PCTabsView.m */,
 				4C1912731649AB1800A11555 /* PCAppRootViewController.h */,
 				4C1912741649AB1800A11555 /* PCAppRootViewController.m */,
 			);
@@ -874,6 +872,8 @@
 				4CA25A29163F1955004A5423 /* PCHistoryViewCell.m */,
 				4CA25A6C16420A22004A5423 /* PCChatViewController.h */,
 				4CA25A6D16420A22004A5423 /* PCChatViewController.m */,
+				4C06F483164CB08200E7E906 /* PCChatEntryViewCell.h */,
+				4C06F484164CB08200E7E906 /* PCChatEntryViewCell.m */,
 			);
 			name = History;
 			sourceTree = "<group>";
@@ -1005,8 +1005,8 @@
 				4CA25A2C163F1991004A5423 /* PCChatVO.m */,
 				4CA25A5A163F327C004A5423 /* PCPersonVO.h */,
 				4CA25A5B163F327C004A5423 /* PCPersonVO.m */,
-				4CA25A6F1643176C004A5423 /* PCChatItemVO.h */,
-				4CA25A701643176C004A5423 /* PCChatItemVO.m */,
+				4CA25A6F1643176C004A5423 /* PCChatEntryVO.h */,
+				4CA25A701643176C004A5423 /* PCChatEntryVO.m */,
 			);
 			name = VO;
 			sourceTree = "<group>";
@@ -1450,7 +1450,7 @@
 				4CA25A5F163F32B1004A5423 /* PCPersonViewCell.m in Sources */,
 				4CA25A6B1641F7E9004A5423 /* AnimatedGif.m in Sources */,
 				4CA25A6E16420A23004A5423 /* PCChatViewController.m in Sources */,
-				4CA25A711643176C004A5423 /* PCChatItemVO.m in Sources */,
+				4CA25A711643176C004A5423 /* PCChatEntryVO.m in Sources */,
 				4CA25AA616435C25004A5423 /* UIImage+fixOrientation.m in Sources */,
 				4CA25AC216447056004A5423 /* ELCAlbumPickerController.m in Sources */,
 				4CA25AC416447056004A5423 /* ELCAsset.m in Sources */,
@@ -1458,8 +1458,8 @@
 				4CA25AC716447056004A5423 /* ELCAssetTablePicker.m in Sources */,
 				4CA25AC916447056004A5423 /* ELCImagePickerController.m in Sources */,
 				4CA25AD11644E7F2004A5423 /* PCSubmitChatViewController.m in Sources */,
-				4C1912711649AAFB00A11555 /* PCTabsView.m in Sources */,
 				4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */,
+				4C06F485164CB08200E7E906 /* PCChatEntryViewCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

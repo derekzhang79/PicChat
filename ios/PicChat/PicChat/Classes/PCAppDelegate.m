@@ -23,6 +23,7 @@
 #import "PCHistoryViewController.h"
 #import "PCCameraViewController.h"
 #import "PCPeopleViewController.h"
+#import "PCAppRootViewController.h"
 
 NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:SCSessionStateChangedNotification";
 
@@ -97,6 +98,15 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 + (BOOL)allowsFBPosting {
 	return ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fb_posting"] isEqualToString:@"YES"]);
+}
+
++ (void)assignChatID:(int)state {
+	[[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%d", state] forKey:@"chat_id"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (int)chatID {
+	return ([[[NSUserDefaults standardUserDefaults] objectForKey:@"chat_id"] intValue]);
 }
 
 
@@ -307,16 +317,18 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"fb_posting"])
 		[PCAppDelegate setAllowsFBPosting:NO];
 	
+	[PCAppDelegate assignChatID:0];
+	
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.window.backgroundColor = [UIColor whiteColor];
 	
-	UIViewController *historyViewController, *cameraViewController, *peopleViewController;
+	UIViewController *historyViewController, *appRootViewController, *peopleViewController;
 	historyViewController = [[PCHistoryViewController alloc] init];
-	cameraViewController = [[PCCameraViewController alloc] init];
+	appRootViewController = [[PCAppRootViewController alloc] init];
 	peopleViewController = [[PCPeopleViewController alloc] init];
 	
 	UINavigationController *navController1 = [[UINavigationController alloc] initWithRootViewController:historyViewController];
-	UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:cameraViewController];
+	UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:appRootViewController];
 	UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:peopleViewController];
 	
 	[navController1 setNavigationBarHidden:YES];
@@ -326,12 +338,14 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.tabBarController = [[PCTabBarController alloc] init];
 	self.tabBarController.delegate = self;
 	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-	[self.tabBarController setSelectedIndex:1];
+	//[self.tabBarController setSelectedIndex:1];
 	
 	self.window.rootViewController = self.tabBarController;
 	[self.window makeKeyAndVisible];
 	
-	[self.tabBarController.navigationController pushViewController:[[PCCameraViewController alloc] init] animated:NO];
+	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+	[navigationController setNavigationBarHidden:YES];
+	[self.tabBarController presentViewController:navigationController animated:NO completion:nil];
 	
 	if (![self openSession]) {
 		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
@@ -453,19 +467,29 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 - (void)_registerUser {
 	//if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
-	
-	
-	NSURL *url = [NSURL URLWithString:[PCAppDelegate apiServerPath]];
-	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
-	
+	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
 	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
 									[NSString stringWithFormat:@"%d", 1], @"action",
 									[PCAppDelegate deviceToken], @"token",
 									nil];
 	
 	[httpClient postPath:kUsersAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-		NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-		NSLog(@"Response: %@", text);
+		NSError *error = nil;
+		NSDictionary *userResult = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+		
+		if (error != nil)
+			NSLog(@"Failed to parse job list JSON: %@", [error localizedFailureReason]);
+		
+		else {
+			NSLog(@"USER: %@", userResult);
+			
+			if ([userResult objectForKey:@"id"] != [NSNull null])
+				[PCAppDelegate writeUserInfo:userResult];
+		}
+		
+		//NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+		//NSLog(@"Response: %@", text);
+		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"%@", [error localizedDescription]);
 	}];
@@ -480,14 +504,6 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 //	} failure:nil];
 //	
 //	[operation start];
-	
-	
-//	ASIFormDataRequest *userRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", [HONAppDelegate apiServerPath], kUsersAPI]]];
-//	[userRequest setDelegate:self];
-//	[userRequest setPostValue:[NSString stringWithFormat:@"%d", 1] forKey:@"action"];
-//	[userRequest setPostValue:[HONAppDelegate deviceToken] forKey:@"token"];
-//	[userRequest startAsynchronous];
-	//}
 }
 
 - (void)saveContext {
@@ -585,7 +601,14 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	//NSLog(@"shouldSelectViewController:[%@]", viewController);
 	
 	if (viewController == [[tabBarController viewControllers] objectAtIndex:1]) {
-		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+		UINavigationController *navigationController;
+		
+		if ([PCAppDelegate chatID] == 0)
+			navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+		
+		else
+			navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] initWithChatID:[PCAppDelegate chatID]]];
+		
 		[navigationController setNavigationBarHidden:YES];
 		[tabBarController presentViewController:navigationController animated:NO completion:nil];
 		

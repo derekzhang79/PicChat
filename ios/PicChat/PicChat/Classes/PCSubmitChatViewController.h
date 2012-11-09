@@ -11,5 +11,6 @@
 @interface PCSubmitChatViewController : UIViewController
 
 - (id)initWithPhotos:(NSArray *)photos;
+- (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID;
 
 @end

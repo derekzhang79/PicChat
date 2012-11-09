@@ -44,6 +44,9 @@ extern NSString *const SCSessionStateChangedNotification;
 
 + (UIViewController *)appTabBarController;
 
++ (void)assignChatID:(int)state;
++ (int)chatID;
+
 + (UIImage *)scaleImage:(UIImage *)image toSize:(CGSize)size;
 + (UIImage *)scaleImage:(UIImage *)image byFactor:(float)factor;
 + (UIImage *)cropImage:(UIImage *)image toRect:(CGRect)rect;
@@ -63,7 +66,8 @@ extern NSString *const SCSessionStateChangedNotification;
 + (UIColor *)greyTxtColor;
 
 #define kUsersAPI @"Users.php"
-#define kMessagesAPI @"Messages.php"
+#define kChatsAPI @"Chats.php"
+#define kChatEntriesAPI @"ChatEntries.php"
 #define kFriendsAPI @"Friends.php"
 
 #define kPhotoTimelapseIncrement 0.5

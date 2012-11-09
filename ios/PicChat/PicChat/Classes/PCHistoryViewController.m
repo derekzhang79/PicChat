@@ -6,37 +6,33 @@
 //  Copyright (c) 2012 Built in Menlo, LLC. All rights reserved.
 //
 
+#import "AFHTTPClient.h"
+#import "AFHTTPRequestOperation.h"
+
 #import "PCHistoryViewController.h"
 #import "PCHistoryViewCell.h"
 #import "PCHeaderView.h"
 #import "PCChatViewController.h"
 #import "PCAppDelegate.h"
-#import "AFHTTPClient.h"
-#import "AFHTTPRequestOperation.h"
+#import "PCChatVO.h"
+
 
 @interface PCHistoryViewController () <UITableViewDataSource, UITableViewDelegate>
 @property(nonatomic, strong) UITableView *tableView;
-@property (nonatomic, strong) NSMutableArray *pendingChats;
 @property (nonatomic, strong) NSMutableArray *allChats;
 @property(nonatomic, strong) UIButton *refreshButton;
-@property (nonatomic) BOOL isNewChats;
 @property(nonatomic) BOOL isMoreLoadable;
 @property(nonatomic, strong) NSIndexPath *idxPath;
+@property(nonatomic, strong) NSDate *lastDate;
 @end
 
 @implementation PCHistoryViewController
 
-@synthesize pendingChats = _pendingChats;
-@synthesize allChats = _allChats;
 
 - (id)init {
 	if ((self = [super init])) {
 		self.view.backgroundColor = [UIColor clearColor];
-		_isNewChats = YES;
 		_isMoreLoadable = YES;
-		
-		_pendingChats = [NSMutableArray array];
-		_allChats = [NSMutableArray array];
 	}
 	
 	return (self);
@@ -60,7 +56,7 @@
 	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:_refreshButton];
 	
-	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 64.0) style:UITableViewStylePlain];
+	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 106.0) style:UITableViewStylePlain];
 	[_tableView setBackgroundColor:[UIColor clearColor]];
 	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	_tableView.rowHeight = 70.0;
@@ -70,6 +66,8 @@
 	_tableView.scrollsToTop = NO;
 	_tableView.showsVerticalScrollIndicator = YES;
 	[self.view addSubview:_tableView];
+	
+	[self _retrieveChats];
 }
 
 - (void)viewDidLoad {
@@ -81,37 +79,58 @@
 }
 
 - (void)_retrieveChats {
-	//if (![[NSUserDefaults standardUserDefaults] objectForKey:@"user"]) {
-	
-	
-	NSURL *url = [NSURL URLWithString:[PCAppDelegate apiServerPath]];
-	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
-	
-	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
-									[NSString stringWithFormat:@"%d", 1], @"action",
-									[PCAppDelegate deviceToken], @"token",
-									nil];
-	
-	[httpClient postPath:kMessagesAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
-		NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
-		NSLog(@"Response: %@", text);
-	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-		NSLog(@"%@", [error localizedDescription]);
-	}];
+//	if ([[NSUserDefaults standardUserDefaults] objectForKey:@"user"] != nil) {
+		_allChats = [NSMutableArray array];
+		NSURL *url = [NSURL URLWithString:[PCAppDelegate apiServerPath]];
+		AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
+		
+		NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+										[NSString stringWithFormat:@"%d", 1], @"action",
+										[[PCAppDelegate infoForUser] objectForKey:@"id"], @"userID",
+										nil];
+		
+		[httpClient postPath:kChatsAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+			NSLog(@"Response: %@", text);
+			
+			NSError *error = nil;
+			if (error != nil)
+				NSLog(@"Failed to parse user JSON: %@", [error localizedDescription]);
+			
+			else {
+				NSArray *chats = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+				
+				for (NSDictionary *chatDict in chats) {
+					PCChatVO *vo = [PCChatVO chatWithDictionary:chatDict];
+					
+					if (vo != nil)
+						[_allChats addObject:vo];
+				}
+				
+				if ([chats count] == 0)
+					_isMoreLoadable = NO;
+				
+				_lastDate = ((PCChatVO *)[_allChats lastObject]).addedDate;
+				_refreshButton.hidden = NO;
+				[_tableView reloadData];
+			}
+			
+		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			NSLog(@"%@", [error localizedDescription]);
+			_refreshButton.hidden = NO;
+		}];
+//	}
 }
 
 #pragma mark - Navigation
 - (void)_goRefresh {
-	
+	_refreshButton.hidden = YES;
+	[self _retrieveChats];
 }
 
 #pragma mark - TableView DataSource Delegates
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	if (_isNewChats)
-		return ([_pendingChats count] + 2);
-	
-	else
-		return ([_allChats count] + 2);
+	return ([_allChats count] + 2);
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -119,17 +138,17 @@
 	
 	if (cell == nil) {
 		if (indexPath.row == 0)
-			cell = [[PCHistoryViewCell alloc] initAsTopCell:_isNewChats];
+			cell = [[PCHistoryViewCell alloc] initAsTopCell];
 		
-		else if (indexPath.row == [_pendingChats count] + 1)
+		else if (indexPath.row == [_allChats count] + 1)
 			cell = [[PCHistoryViewCell alloc] initAsBottomCell:_isMoreLoadable];
 		
 		else
 			cell = [[PCHistoryViewCell alloc] initAsChatCell];
 	}
 	
-	if (indexPath.row > 0 && indexPath.row < [_pendingChats count] + 1)
-		cell.chatVO = [_pendingChats objectAtIndex:indexPath.row - 1];
+	if (indexPath.row > 0 && indexPath.row < [_allChats count] + 1)
+		cell.chatVO = (PCChatVO *)[_allChats objectAtIndex:indexPath.row - 1];
 	
 	[cell setSelectionStyle:UITableViewCellSelectionStyleNone];
 	
@@ -143,7 +162,7 @@
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-	if (indexPath.row < [_pendingChats count] + 1) {
+	if (indexPath.row < [_allChats count] + 1) {
 		return (indexPath);
 	}
 	
@@ -154,27 +173,14 @@
 	[tableView deselectRowAtIndexPath:[tableView indexPathForSelectedRow] animated:NO];
 	[(PCHistoryViewCell *)[tableView cellForRowAtIndexPath:indexPath] didSelect];
 	
-	//PCChatVO *vo = [_pendingChats objectAtIndex:indexPath.row - 1];
-	[self.navigationController pushViewController:[[PCChatViewController alloc] init] animated:YES];
-	
-//	if ([vo.status isEqualToString:@"Accept"] || [vo.status isEqualToString:@"Waiting"]) {
-//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[HONPhotoViewController alloc] initWithImagePath:vo.imageURL withTitle:vo.subjectName]];
-//		[navigationController setNavigationBarHidden:YES];
-//		[self presentViewController:navigationController animated:YES completion:nil];
-//		
-//	} else if ([vo.status isEqualToString:@"Started"]) {
-//		[self.navigationController pushViewController:[[HONVoteViewController alloc] initWithChallenge:vo] animated:YES];
-//	}
+	PCChatVO *vo = (PCChatVO *)[_allChats objectAtIndex:indexPath.row - 1];
+	[self.navigationController pushViewController:[[PCChatViewController alloc] initWithChatVO:vo] animated:YES];
 }
-
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-	// Return YES if you want the specified item to be editable.
-	
-	return (indexPath.row > 0 && indexPath.row < [_pendingChats count] + 1);
+	return (indexPath.row > 0 && indexPath.row < [_allChats count] + 1);
 }
 
-// Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
 	if (editingStyle == UITableViewCellEditingStyleDelete) {
 		_idxPath = indexPath;

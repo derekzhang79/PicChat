@@ -14,7 +14,7 @@
 
 + (NSString *)cellReuseIdentifier;
 
-- (id)initAsTopCell:(BOOL)isNewList;
+- (id)initAsTopCell;
 - (id)initAsBottomCell:(BOOL)isEnabled;
 - (id)initAsChatCell;
 

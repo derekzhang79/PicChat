@@ -112,6 +112,8 @@
 			[btn1 setSelected:true];
 			[btn2 setSelected:false];
 			[btn3 setSelected:false];
+			
+			[PCAppDelegate assignChatID:0];
 			break;
 			
 		case 1:
@@ -123,6 +125,7 @@
 			[btn2 setSelected:true];
 			[btn3 setSelected:false];
 			
+			[PCAppDelegate assignChatID:0];
 			break;
 			
 		case 2:
@@ -134,6 +137,7 @@
 			[btn2 setSelected:false];
 			[btn3 setSelected:true];
 			
+			[PCAppDelegate assignChatID:0];
 			[[NSNotificationCenter defaultCenter] postNotificationName:@"PRESENT_FRIENDS" object:nil];
 			break;
 	}

@@ -9,5 +9,5 @@
 #import <UIKit/UIKit.h>
 
 @interface PCCameraViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
-
+- (id)initWithChatID:(int)chatID;
 @end

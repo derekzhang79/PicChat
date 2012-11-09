@@ -6,11 +6,17 @@
 //  Copyright (c) 2012 Built in Menlo, LLC. All rights reserved.
 //
 
+#import "UIImageView+WebCache.h"
+
 #import "PCHistoryViewCell.h"
+#import "PCAppDelegate.h"
 
 @interface PCHistoryViewCell ()
 @property (nonatomic, strong) UIImageView *bgImgView;
 @property (nonatomic, strong) UIImageView *toggleImgView;
+@property (nonatomic, strong) UIImageView *participantImgView;
+@property (nonatomic, strong) UILabel *participantLabel;
+@property (nonatomic, strong) UILabel *entiesLabel;
 @property (nonatomic) BOOL isNewChats;
 @end
 
@@ -32,7 +38,7 @@
 	return (self);
 }
 
-- (id)initAsTopCell:(BOOL)isNewList {
+- (id)initAsTopCell {
 	if ((self = [self init])) {
 //		_isNewChats = isNewList;
 		_bgImgView.image = [UIImage imageNamed:@"headerTableRow.png"];
@@ -76,6 +82,16 @@
 - (id)initAsChatCell {
 	if ((self = [self init])) {
 		_bgImgView.image = [UIImage imageNamed:@"commonTableRow_nonActive.png"];
+		
+		_participantImgView = [[UIImageView alloc] initWithFrame:CGRectMake(18.0, 8.0, 54.0, 54.0)];
+		_participantImgView.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1.0];
+		[self addSubview:_participantImgView];
+		
+		_participantLabel = [[UILabel alloc] initWithFrame:CGRectMake(104.0, 19.0, 200.0, 16.0)];
+		_participantLabel.font = [[PCAppDelegate helveticaNeueFontBold] fontWithSize:14];
+		_participantLabel.textColor = [PCAppDelegate blueTxtColor];
+		_participantLabel.backgroundColor = [UIColor clearColor];
+		[self addSubview:_participantLabel];
 	}
 	
 	return (self);
@@ -83,6 +99,9 @@
 
 - (void)setChatVO:(PCChatVO *)chatVO {
 	_chatVO = chatVO;
+	
+	[_participantImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _chatVO.participantFB]] placeholderImage:nil];
+	_participantLabel.text = _chatVO.participantName;
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

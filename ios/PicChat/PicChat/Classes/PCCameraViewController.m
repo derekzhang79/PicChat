@@ -24,6 +24,7 @@
 @property(nonatomic, strong) NSTimer *focusTimer;
 @property(nonatomic, strong) NSTimer *photoTimer;
 @property(nonatomic) int photoCounter;
+@property(nonatomic) int chatID;
 @property(nonatomic, strong) NSMutableArray *photos;
 
 - (void)_showOverlay;
@@ -36,9 +37,17 @@
 
 - (id)init {
 	if ((self = [super init])) {
-		self.view.backgroundColor = [UIColor whiteColor];
-		
+		self.view.backgroundColor = [UIColor blackColor];
+		_chatID = 0;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_showCamera:) name:@"SHOW_CAMERA" object:nil];
+	}
+	
+	return (self);
+}
+
+- (id)initWithChatID:(int)chatID {
+	if ((self = [self init])) {
+		_chatID = chatID;
 	}
 	
 	return (self);
@@ -46,7 +55,6 @@
 
 - (void)loadView {
 	[super loadView];
-	NSLog(@"loadView");
 	
 	//[self _presentCamera];
 	
@@ -56,14 +64,18 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
-	NSLog(@"viewDidLoad");
+	
+//	FBLoginView *loginview = [[FBLoginView alloc] init];
+//	loginview.frame = CGRectOffset(loginview.frame, 5, 5);
+//	//loginview.delegate = self;
+//	[self.view addSubview:loginview];
+//	[loginview sizeToFit];
 	
 	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.25];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
-	NSLog(@"viewDidAppear");
 	
 	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 }
@@ -73,6 +85,7 @@
 }
 
 - (void)_presentCamera {
+	
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"COMPOSE_SOURCE_CAMERA" object:nil];
 		_photos = [NSMutableArray array];
@@ -181,7 +194,11 @@
 	
 	if (_photoCounter == 3) {
 		[self dismissViewControllerAnimated:NO completion:^(void) {
-			[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos] animated:YES];
+			if ([PCAppDelegate chatID] == 0)
+				[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos] animated:YES];
+			
+			else
+				[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos withChatID:[PCAppDelegate chatID]] animated:YES];
 		}];
 	}
 	
@@ -304,6 +321,7 @@
 //		
 //	} else {
 		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+	[self.navigationController dismissViewControllerAnimated:YES completion:nil];
 		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 //	}
 //[self.navigationController popToRootViewControllerAnimated:NO];
@@ -379,10 +397,9 @@
 }
 
 - (void)cameraOverlayViewCloseCamera:(PCCameraOverlayView *)cameraOverlayView {
+	[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 	[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-		//[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
-		[self.navigationController popToRootViewControllerAnimated:NO];
+		[self.navigationController dismissViewControllerAnimated:NO completion:nil];
 	}];
 }
 

@@ -6,6 +6,9 @@
 //  Copyright (c) 2012 Built in Menlo, LLC. All rights reserved.
 //
 
+#import "AFHTTPClient.h"
+#import "AFHTTPRequestOperation.h"
+
 #import "PCAppDelegate.h"
 #import "PCLoginViewController.h"
 
@@ -87,13 +90,34 @@
 					  
 					  [PCAppDelegate writeFBProfile:user];
 					  
-//					  ASIFormDataRequest *userRequest = [ASIFormDataRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", [HONAppDelegate apiServerPath], kUsersAPI]]];
-//					  [userRequest setDelegate:self];
-//					  [userRequest setPostValue:[NSString stringWithFormat:@"%d", 2] forKey:@"action"];
-//					  [userRequest setPostValue:[[HONAppDelegate infoForUser] objectForKey:@"id"] forKey:@"userID"];
-//					  [userRequest setPostValue:[user objectForKey:@"first_name"] forKey:@"username"];
-//					  [userRequest setPostValue:[user objectForKey:@"id"] forKey:@"fbID"];
-//					  [userRequest startAsynchronous];
+					  AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
+					  NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+													  [NSString stringWithFormat:@"%d", 2], @"action",
+													  [[PCAppDelegate infoForUser] objectForKey:@"id"], @"userID",
+													  [user objectForKey:@"first_name"], @"username",
+													  [user objectForKey:@"id"], @"fbID", 
+													  nil];
+					  
+					  [httpClient postPath:kUsersAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+						  NSError *error = nil;
+						  NSDictionary *userResult = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+						  
+						  if (error != nil)
+							  NSLog(@"Failed to parse job list JSON: %@", [error localizedFailureReason]);
+						  
+						  else {
+							  NSLog(@"USER: %@", userResult);
+							  
+							  if ([userResult objectForKey:@"id"] != [NSNull null])
+								  [PCAppDelegate writeUserInfo:userResult];
+						  }
+						  
+						  //NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+						  //NSLog(@"Response: %@", text);
+						  
+					  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+						  NSLog(@"%@", [error localizedDescription]);
+					  }];					  
 				  }
 			  }];
 		 }

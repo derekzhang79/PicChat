@@ -14,4 +14,6 @@
 
 - (id)initWithChatVO:(PCChatVO *)vo;
 
+@property (nonatomic, strong) PCChatVO *chatVO;
+
 @end
