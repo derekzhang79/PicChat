@@ -37,6 +37,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 @synthesize managedObjectModel = _managedObjectModel;
 @synthesize persistentStoreCoordinator = _persistentStoreCoordinator;
 @synthesize tabBarController = _tabBarController;
+@synthesize cameraViewController = _cameraViewController;
 
 
 + (NSString *)apiServerPath {
@@ -101,7 +102,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 }
 
 + (void)assignChatID:(int)state {
-	[[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%d", state] forKey:@"chat_id"];
+	[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:state] forKey:@"chat_id"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
@@ -110,7 +111,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 }
 
 
-+ (UIViewController *)appTabBarController {
++ (UIViewController *)rootViewController {
 	return ([[UIApplication sharedApplication] keyWindow].rootViewController);
 }
 
@@ -322,6 +323,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 	self.window.backgroundColor = [UIColor whiteColor];
 	
+
 	UIViewController *historyViewController, *appRootViewController, *peopleViewController;
 	historyViewController = [[PCHistoryViewController alloc] init];
 	appRootViewController = [[PCAppRootViewController alloc] init];
@@ -338,19 +340,18 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	self.tabBarController = [[PCTabBarController alloc] init];
 	self.tabBarController.delegate = self;
 	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-	//[self.tabBarController setSelectedIndex:1];
 	
-	self.window.rootViewController = self.tabBarController;
+	self.window.rootViewController = [[PCAppRootViewController alloc] init];
 	[self.window makeKeyAndVisible];
 	
 	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
 	[navigationController setNavigationBarHidden:YES];
-	[self.tabBarController presentViewController:navigationController animated:NO completion:nil];
+	[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
 	
 	if (![self openSession]) {
 		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
 		[navigationController setNavigationBarHidden:YES];
-		[self.tabBarController presentViewController:navigationController animated:NO completion:nil];
+		[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
 	}
 	
 	return (YES);

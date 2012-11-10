@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "Facebook.h"
 #import "PCLoginViewController.h"
+#import "PCCameraViewController.h"
 
 extern NSString *const SCSessionStateChangedNotification;
 
@@ -21,6 +22,7 @@ extern NSString *const SCSessionStateChangedNotification;
 @property (readonly, strong, nonatomic) NSPersistentStoreCoordinator *persistentStoreCoordinator;
 @property (strong, nonatomic) UITabBarController *tabBarController;
 @property (strong, nonatomic) PCLoginViewController *loginViewController;
+@property (strong, nonatomic) PCCameraViewController *cameraViewController;
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
@@ -42,7 +44,7 @@ extern NSString *const SCSessionStateChangedNotification;
 + (void)setAllowsFBPosting:(BOOL)canPost;
 + (BOOL)allowsFBPosting;
 
-+ (UIViewController *)appTabBarController;
++ (UIViewController *)rootViewController;
 
 + (void)assignChatID:(int)state;
 + (int)chatID;

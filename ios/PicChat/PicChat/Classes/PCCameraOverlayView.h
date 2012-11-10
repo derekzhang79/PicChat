@@ -23,7 +23,9 @@
 - (void)cameraOverlayViewChangeCamera:(PCCameraOverlayView *)cameraOverlayView;
 - (void)cameraOverlayViewShowCameraRoll:(PCCameraOverlayView *)cameraOverlayView;
 - (void)cameraOverlayViewCloseCamera:(PCCameraOverlayView *)cameraOverlayView;
-@optional
+- (void)cameraOverlayViewLeftTabTapped:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewRightTabTapped:(PCCameraOverlayView *)cameraOverlayView;
 - (void)cameraOverlayViewChangeFlash:(PCCameraOverlayView *)cameraOverlayView;
+@optional
 - (void)cameraOverlayViewHidePreview:(PCCameraOverlayView *)cameraOverlayView;
 @end

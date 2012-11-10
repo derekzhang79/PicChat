@@ -14,6 +14,7 @@
 #import "PCCameraViewController.h"
 #import "PCCameraOverlayView.h"
 #import "PCSubmitChatViewController.h"
+#import "PCHistoryViewController.h"
 
 #import "ELCAlbumPickerController.h"
 #import "ELCImagePickerController.h"
@@ -25,6 +26,7 @@
 @property(nonatomic, strong) NSTimer *photoTimer;
 @property(nonatomic) int photoCounter;
 @property(nonatomic) int chatID;
+@property(nonatomic) BOOL isFirstAppearance;
 @property(nonatomic, strong) NSMutableArray *photos;
 
 - (void)_showOverlay;
@@ -37,8 +39,9 @@
 
 - (id)init {
 	if ((self = [super init])) {
-		self.view.backgroundColor = [UIColor blackColor];
+		self.view.backgroundColor = [UIColor grayColor];
 		_chatID = 0;
+		_isFirstAppearance = YES;
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_showCamera:) name:@"SHOW_CAMERA" object:nil];
 	}
 	
@@ -48,6 +51,7 @@
 - (id)initWithChatID:(int)chatID {
 	if ((self = [self init])) {
 		_chatID = chatID;
+		_isFirstAppearance = YES;
 	}
 	
 	return (self);
@@ -55,6 +59,7 @@
 
 - (void)loadView {
 	[super loadView];
+	NSLog(@"loadView");
 	
 	//[self _presentCamera];
 	
@@ -64,6 +69,9 @@
 
 - (void)viewDidLoad {
 	[super viewDidLoad];
+	NSLog(@"viewDidLoad");
+	
+	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
 	
 //	FBLoginView *loginview = [[FBLoginView alloc] init];
 //	loginview.frame = CGRectOffset(loginview.frame, 5, 5);
@@ -71,13 +79,21 @@
 //	[self.view addSubview:loginview];
 //	[loginview sizeToFit];
 	
-	[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.25];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
 	[super viewDidAppear:animated];
 	
-	//[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	NSLog(@"viewDidAppear");
+	
+	if (_isFirstAppearance) {
+		_isFirstAppearance = NO;
+		[self performSelector:@selector(_presentCamera) withObject:nil afterDelay:0.125];
+	}
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+	[super viewDidDisappear:animated];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -85,6 +101,7 @@
 }
 
 - (void)_presentCamera {
+	NSLog(@"_presentCamera[%d]", ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]));
 	
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"COMPOSE_SOURCE_CAMERA" object:nil];
@@ -194,6 +211,8 @@
 	
 	if (_photoCounter == 3) {
 		[self dismissViewControllerAnimated:NO completion:^(void) {
+			_isFirstAppearance = YES;
+			
 			if ([PCAppDelegate chatID] == 0)
 				[self.navigationController pushViewController:[[PCSubmitChatViewController alloc] initWithPhotos:_photos] animated:YES];
 			
@@ -401,6 +420,27 @@
 	[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
 		[self.navigationController dismissViewControllerAnimated:NO completion:nil];
 	}];
+}
+
+- (void)cameraOverlayViewChangeFlash:(PCCameraOverlayView *)cameraOverlayView {
+	if (_imagePicker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOff)
+		_imagePicker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOn;
+	
+	else if (_imagePicker.cameraFlashMode == UIImagePickerControllerCameraFlashModeOn)
+		_imagePicker.cameraFlashMode = UIImagePickerControllerCameraFlashModeOff;
+}
+
+- (void)cameraOverlayViewLeftTabTapped:(PCCameraOverlayView *)cameraOverlayView {
+	[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
+		[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
+			[navigationController setNavigationBarHidden:YES];
+			[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+		}];
+	}];
+}
+
+- (void)cameraOverlayViewRightTabTapped:(PCCameraOverlayView *)cameraOverlayView {
 }
 
 @end

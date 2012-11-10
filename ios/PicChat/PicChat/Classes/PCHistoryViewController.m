@@ -15,6 +15,7 @@
 #import "PCChatViewController.h"
 #import "PCAppDelegate.h"
 #import "PCChatVO.h"
+#import "PCCameraViewController.h"
 
 
 @interface PCHistoryViewController () <UITableViewDataSource, UITableViewDelegate>
@@ -44,6 +45,13 @@
 	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Chats"];
 	[self.view addSubview:headerView];
 	
+	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	backButton.frame = CGRectMake(5.0, 0.0, 74.0, 44.0);
+	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
+	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
+	[backButton addTarget:self action:@selector(_goCamera) forControlEvents:UIControlEventTouchUpInside];
+	[headerView addSubview:backButton];
+	
 	UIActivityIndicatorView *activityIndicatorView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhite];
 	activityIndicatorView.frame = CGRectMake(284.0, 10.0, 24.0, 24.0);
 	[activityIndicatorView startAnimating];
@@ -56,7 +64,7 @@
 	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:_refreshButton];
 	
-	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 106.0) style:UITableViewStylePlain];
+	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 65.0) style:UITableViewStylePlain];
 	[_tableView setBackgroundColor:[UIColor clearColor]];
 	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	_tableView.rowHeight = 70.0;
@@ -123,6 +131,14 @@
 }
 
 #pragma mark - Navigation
+- (void)_goCamera {
+	[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+		[navigationController setNavigationBarHidden:YES];
+		[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+	}];
+}
+
 - (void)_goRefresh {
 	_refreshButton.hidden = YES;
 	[self _retrieveChats];

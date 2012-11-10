@@ -125,7 +125,7 @@
 			[btn2 setSelected:true];
 			[btn3 setSelected:false];
 			
-			[PCAppDelegate assignChatID:0];
+			//[PCAppDelegate assignChatID:0];
 			break;
 			
 		case 2:

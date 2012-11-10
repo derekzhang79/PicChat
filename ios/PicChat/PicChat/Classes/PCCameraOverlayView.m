@@ -30,12 +30,12 @@
 		UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, frame.size.width, 192.0)];
 		[self addSubview:headerView];
 		
-		UIButton *fxButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		fxButton.frame = CGRectMake(10.0, 0.0, 94.0, 64.0);
-		[fxButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_nonActive.png"] forState:UIControlStateNormal];
-		[fxButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_Active.png"] forState:UIControlStateHighlighted];
-		[fxButton addTarget:self action:@selector(_goFX) forControlEvents:UIControlEventTouchUpInside];
-		[headerView addSubview:fxButton];
+		UIButton *flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
+		flashButton.frame = CGRectMake(10.0, 0.0, 94.0, 64.0);
+		[flashButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_nonActive.png"] forState:UIControlStateNormal];
+		[flashButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_Active.png"] forState:UIControlStateHighlighted];
+		[flashButton addTarget:self action:@selector(_goFlashToggle) forControlEvents:UIControlEventTouchUpInside];
+		[headerView addSubview:flashButton];
 		
 		UIButton *optionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		optionsButton.frame = CGRectMake(120.0, 0.0, 94.0, 64.0);
@@ -83,8 +83,8 @@
 
 
 #pragma mark - Navigation
-- (void)_goFX {
-	[self _closeCamera];
+- (void)_goFlashToggle {
+	[_delegate cameraOverlayViewChangeFlash:self];
 }
 
 - (void)_goOptions {
@@ -96,7 +96,7 @@
 }
 
 - (void)_goLeft {
-	
+	[_delegate cameraOverlayViewLeftTabTapped:self];
 }
 
 - (void)_goTakePhoto {
@@ -104,7 +104,7 @@
 }
 
 - (void)_goRight {
-	
+	[_delegate cameraOverlayViewRightTabTapped:self];
 }
 
 

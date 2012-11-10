@@ -42,6 +42,8 @@
 		_chatVO = vo;
 		
 		[PCAppDelegate assignChatID:_chatVO.chatID];
+		
+		NSLog(@"CHAT ID:[%d][%d]", _chatVO.chatID, [PCAppDelegate chatID]);
 	}
 	
 	return (self);
@@ -72,7 +74,19 @@
 	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:_refreshButton];
 	
-	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 106.0) style:UITableViewStylePlain];
+	UIImageView *footerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, [UIScreen mainScreen].bounds.size.height - 68.0, 320.0, 48.0)];
+	footerImgView.image = [UIImage imageNamed:@"footerBG.png"];
+	footerImgView.userInteractionEnabled = YES;
+	[self.view addSubview:footerImgView];
+	
+	UIButton *midButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	midButton.frame = CGRectMake(64.0, 0.0, 191.0, 48.0);
+	[midButton setBackgroundImage:[UIImage imageNamed:@"middleIcon_nonActive.png"] forState:UIControlStateNormal];
+	[midButton setBackgroundImage:[UIImage imageNamed:@"middleIcon_Active.png"] forState:UIControlStateHighlighted];
+	[midButton addTarget:self action:@selector(_goAddEntry) forControlEvents:UIControlEventTouchUpInside];
+	[footerImgView addSubview:midButton];
+	
+	_tableView = [[UITableView alloc] initWithFrame:CGRectMake(0.0, 45.0, [UIScreen mainScreen].bounds.size.width, [UIScreen mainScreen].bounds.size.height - 114.0) style:UITableViewStylePlain];
 	[_tableView setBackgroundColor:[UIColor clearColor]];
 	_tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
 	_tableView.rowHeight = 220.0;
@@ -152,6 +166,12 @@
 - (void)_goRefresh {
 	_refreshButton.hidden = YES;
 	[self _retrieveEntries];
+}
+
+- (void)_goAddEntry {
+	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+	[navigationController setNavigationBarHidden:YES];
+	[self.navigationController presentViewController:navigationController animated:NO completion:nil];
 }
 
 

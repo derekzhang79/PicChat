@@ -89,7 +89,7 @@
 //	[friendButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
 	[friendButton setBackgroundColor:[UIColor redColor]];
 	[friendButton addTarget:self action:@selector(_goSelectFriend) forControlEvents:UIControlEventTouchUpInside];
-	friendButton.hidden = (_chatID == 0);
+	friendButton.hidden = ([PCAppDelegate chatID] != 0);
 	[self.view addSubview:friendButton];
 	
 	UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -216,6 +216,8 @@
 		NSDictionary *params;
 		NSString *apiEndpt;
 		
+		NSLog(@"CHAT ID:[%d]", [PCAppDelegate chatID]);
+		
 		if ([PCAppDelegate chatID] == 0) {
 			apiEndpt = kChatsAPI;
 			params = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -232,7 +234,7 @@
 			params = [NSDictionary dictionaryWithObjectsAndKeys:
 						 [NSString stringWithFormat:@"%d", 1], @"action",
 						 [[PCAppDelegate infoForUser] objectForKey:@"id"], @"userID",
-						 [NSString stringWithFormat:@"%d", _chatID], @"chatID",
+						 [NSString stringWithFormat:@"%d", [PCAppDelegate chatID]], @"chatID",
 						 imgURLs, @"imgURLs",
 						 nil];
 		}
