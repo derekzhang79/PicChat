@@ -30,6 +30,8 @@ extern NSString *const SCSessionStateChangedNotification;
 + (NSString *)apiServerPath;
 + (NSDictionary *)s3Credentials;
 + (NSString *)facebookCanvasURL;
++ (NSString *)dailySubjectName;
++ (NSString *)rndDefaultSubject;
 
 - (BOOL)openSession;
 + (void)writeDeviceToken:(NSString *)token;
@@ -43,6 +45,9 @@ extern NSString *const SCSessionStateChangedNotification;
 
 + (void)setAllowsFBPosting:(BOOL)canPost;
 + (BOOL)allowsFBPosting;
+
++ (void)storeFBFriends:(NSArray *)friends;
++ (NSArray *)fbFriends;
 
 + (UIViewController *)rootViewController;
 

@@ -8,6 +8,7 @@
 
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
+#import "Mixpanel.h"
 
 #import "PCHistoryViewController.h"
 #import "PCHistoryViewCell.h"
@@ -140,6 +141,11 @@
 }
 
 - (void)_goRefresh {
+	[[Mixpanel sharedInstance] track:@"Refresh Chat List"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user",
+												 nil]];
+	
 	_refreshButton.hidden = YES;
 	[self _retrieveChats];
 }

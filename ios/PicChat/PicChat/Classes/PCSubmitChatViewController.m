@@ -9,6 +9,7 @@
 #import <QuartzCore/QuartzCore.h>
 #import <AWSiOSSDK/S3/AmazonS3Client.h>
 
+#import "UIImageView+WebCache.h"
 #import "AFHTTPClient.h"
 #import "AFHTTPRequestOperation.h"
 #import "FBFriendPickerViewController.h"
@@ -19,8 +20,9 @@
 #import "PCAppDelegate.h"
 #import "PCHeaderView.h"
 #import "PCChatVO.h"
+#import "PCHistoryViewController.h"
 
-@interface PCSubmitChatViewController () <FBFriendPickerDelegate>
+@interface PCSubmitChatViewController () <UITextFieldDelegate, FBFriendPickerDelegate>
 @property (nonatomic, strong) UIImageView *photoImgView;
 @property (nonatomic, strong) NSArray *photos;
 @property (nonatomic, strong) NSTimer *photoTimer;
@@ -29,8 +31,11 @@
 @property(nonatomic, strong) NSString *fbName;
 @property(nonatomic, strong) NSString *filename;
 @property(nonatomic, strong) NSString *subjectName;
+@property(nonatomic, strong) UIImageView *recipientImgView;
 @property(nonatomic) int chatID;
 @property(nonatomic, strong) MBProgressHUD *progressHUD;
+@property(nonatomic, strong) UITextField *subjectTextField;
+@property(nonatomic, strong) UIButton *editButton;
 @end
 
 @implementation PCSubmitChatViewController
@@ -39,7 +44,7 @@
 	if ((self = [super init])) {
 		_photos = [NSArray array];
 		_photoCounter = 0;
-		_subjectName = @"DERP";
+		_subjectName = @"";
 	}
 	
 	return (self);
@@ -50,6 +55,7 @@
 	if ((self = [self init])) {
 		_photos = photos;
 		_chatID = 0;
+		_fbID = @"";
 	}
 	
 	return (self);
@@ -59,6 +65,40 @@
 	if ((self = [self init])) {
 		_photos = photos;
 		_chatID = chatID;
+		_fbID = @"";
+	}
+	
+	return (self);
+}
+
+- (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID withSubject:(NSString *)subject {
+	if ((self = [self init])) {
+		_photos = photos;
+		_chatID = chatID;
+		_fbID = @"";
+		_subjectName = subject;
+	}
+	
+	return (self);
+}
+
+- (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID withSubject:(NSString *)subject withFBID:(NSString *)fbID withFBName:(NSString *)fbName {
+	if ((self = [self init])) {
+		_photos = photos;
+		_chatID = chatID;
+		_fbID = fbID;
+		_subjectName = subject;
+	}
+	
+	return (self);
+}
+
+- (id)initWithPhotos:(NSArray *)photos withSubject:(NSString *)subject {
+	if ((self = [self init])) {
+		_photos = photos;
+		_chatID = 0;
+		_subjectName = subject;
+		_fbID = @"";
 	}
 	
 	return (self);
@@ -83,11 +123,51 @@
 	
 	_photoTimer = [NSTimer scheduledTimerWithTimeInterval:0.33 target:self selector:@selector(_nextPhoto) userInfo:nil repeats:YES];
 	
+	_recipientImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 55.0, 50.0, 50.0)];
+	
+	if (![_fbID isEqual:@""])
+		[_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _fbID]] placeholderImage:nil];
+	[self.view addSubview:_recipientImgView];
+	
+	_subjectTextField = [[UITextField alloc] initWithFrame:CGRectMake(20.0, 110.0, 240.0, 20.0)];
+	//[_subjectTextField setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
+	[_subjectTextField setAutocapitalizationType:UITextAutocapitalizationTypeNone];
+	[_subjectTextField setAutocorrectionType:UITextAutocorrectionTypeNo];
+	_subjectTextField.keyboardAppearance = UIKeyboardAppearanceDefault;
+	[_subjectTextField setReturnKeyType:UIReturnKeyDone];
+	[_subjectTextField setTextColor:[UIColor whiteColor]];
+	[_subjectTextField addTarget:self action:@selector(_onTxtDoneEditing:) forControlEvents:UIControlEventEditingDidEndOnExit];
+	_subjectTextField.font = [[PCAppDelegate helveticaNeueFontBold] fontWithSize:16];
+	_subjectTextField.keyboardType = UIKeyboardTypeDefault;
+	_subjectTextField.text = [NSString stringWithFormat:@"#%@", _subjectName];
+	_subjectTextField.delegate = self;
+	[self.view addSubview:_subjectTextField];
+	
+	_editButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	_editButton.frame = CGRectMake(265.0, 60.0, 44.0, 44.0);
+	[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_nonActive.png"] forState:UIControlStateNormal];
+	[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_Active.png"] forState:UIControlStateHighlighted];
+	[_editButton addTarget:self action:@selector(_goEditSubject) forControlEvents:UIControlEventTouchUpInside];
+	[self.view addSubview:_editButton];
+	
+	NSLog(@"CHAT ID:[%d][%@]", [PCAppDelegate chatID], _fbID);
+	
+	UIButton *randomButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	randomButton.frame = CGRectMake(18.0, 278.0, 284.0, 49.0);
+//	[randomButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
+//	[randomButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
+	[randomButton setBackgroundColor:[UIColor redColor]];
+	[randomButton setTitle:@"RANDOM" forState:UIControlStateNormal];
+	[randomButton addTarget:self action:@selector(_goRandomChat) forControlEvents:UIControlEventTouchUpInside];
+	randomButton.hidden = ([PCAppDelegate chatID] != 0);
+	[self.view addSubview:randomButton];
+	
 	UIButton *friendButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	friendButton.frame = CGRectMake(18.0, 338.0, 284.0, 49.0);
 //	[friendButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
 //	[friendButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
-	[friendButton setBackgroundColor:[UIColor redColor]];
+	[friendButton setBackgroundColor:[UIColor greenColor]];
+	[friendButton setTitle:@"FRIENDS" forState:UIControlStateNormal];
 	[friendButton addTarget:self action:@selector(_goSelectFriend) forControlEvents:UIControlEventTouchUpInside];
 	friendButton.hidden = ([PCAppDelegate chatID] != 0);
 	[self.view addSubview:friendButton];
@@ -96,8 +176,9 @@
 	submitButton.frame = CGRectMake(18.0, 398.0, 284.0, 49.0);
 //	[submitButton setBackgroundImage:[UIImage imageNamed:@"challengeRandomButton_nonActive.png"] forState:UIControlStateNormal];
 //	[submitButton setBackgroundImage:[UIImage imageNamed:@"challengeRandomButton_Active.png"] forState:UIControlStateHighlighted];
+	[submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
 	[submitButton addTarget:self action:@selector(_goSubmitChat) forControlEvents:UIControlEventTouchUpInside];
-	[submitButton setBackgroundColor:[UIColor redColor]];
+	[submitButton setBackgroundColor:[UIColor blueColor]];
 	[self.view addSubview:submitButton];
 }
 
@@ -123,6 +204,115 @@
 	_photoTimer = nil;
 	
 	[self.navigationController popViewControllerAnimated:YES];
+}
+
+
+#pragma mark - TextField Delegates
+-(void)textFieldDidBeginEditing:(UITextField *)textField {
+	_editButton.hidden = YES;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField {
+	[textField resignFirstResponder];
+	return YES;
+}
+
+-(void)textFieldDidEndEditing:(UITextField *)textField {
+	[textField resignFirstResponder];
+	
+	_editButton.hidden = NO;
+	
+	if ([textField.text length] == 0)
+		textField.text = _subjectName;
+	
+	else
+		_subjectName = textField.text;
+}
+
+- (void)_goRandomChat {
+	_progressHUD = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] delegate].window animated:YES];
+	_progressHUD.labelText = @"Submitting Chat…";
+	_progressHUD.mode = MBProgressHUDModeIndeterminate;
+	
+	[self performSelector:@selector(_submitRandomChat) withObject:nil afterDelay:0.33];
+}
+
+- (void)_submitRandomChat {
+	//NSData *imageData = UIImageJPEGRepresentation(self.image, 1.0);
+	
+	
+	AmazonS3Client *s3 = [[AmazonS3Client alloc] initWithAccessKey:[[PCAppDelegate s3Credentials] objectForKey:@"key"] withSecretKey:[[PCAppDelegate s3Credentials] objectForKey:@"secret"]];
+	[s3 createBucket:[[S3CreateBucketRequest alloc] initWithName:@"picchat-entries"]];
+	
+	_filename = [NSString stringWithFormat:@"%@_%@", [PCAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
+	
+	@try {		
+		NSLog(@"https://picchat-entries.s3.amazonaws.com/%@", self.filename);		
+		int photoIndex = 0;
+		NSString *imgURLs = @"";
+		for (UIImage *img in _photos) {
+			UIImage *scaledImage = [PCAppDelegate scaleImage:img toSize:CGSizeMake(300 * 2.0, 400 * 2.0)];
+			NSString *imgURL = [NSString stringWithFormat:@"%@_%d.jpg", self.filename, photoIndex++];
+			imgURLs = [imgURLs stringByAppendingFormat:@"https://picchat-entries.s3.amazonaws.com/%@|", imgURL];
+			
+			S3PutObjectRequest *por = [[S3PutObjectRequest alloc] initWithKey:imgURL inBucket:@"picchat-entries"];
+			por.contentType = @"image/jpeg";
+			por.data = UIImageJPEGRepresentation(scaledImage, 0.5);
+			[s3 putObject:por];
+		}
+		
+		imgURLs = [imgURLs substringToIndex:[imgURLs length] - 1];
+		NSLog(@"URLS:[%@]", imgURLs);
+		
+		if ([_subjectName hasPrefix:@"#"])
+			_subjectName = [_subjectName substringFromIndex:1];
+		
+		AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
+		NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
+					 [NSString stringWithFormat:@"%d", 3], @"action",
+					 [[PCAppDelegate infoForUser] objectForKey:@"id"], @"userID",
+					 _subjectName, @"subject",
+					 imgURLs, @"imgURLs",
+					 nil];
+			
+		[httpClient postPath:kChatsAPI parameters:params success:^(AFHTTPRequestOperation *operation, id responseObject) {
+			NSString *text = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+			NSLog(@"Response: %@", text);
+			
+			NSError *error = nil;
+			NSDictionary *chatResult = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+			
+			if (error != nil)
+				NSLog(@"Failed to parse job list JSON: %@", [error localizedFailureReason]);
+			
+			else {
+				NSLog(@"RESULT: %@", chatResult);
+			}
+			
+			[_progressHUD hide:YES];
+			_progressHUD = nil;
+			
+			//[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+			[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+				UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
+				[navigationController setNavigationBarHidden:YES];
+				[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+			}];
+			
+		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+			NSLog(@"%@", [error localizedDescription]);
+			[_progressHUD hide:YES];
+			_progressHUD = nil;
+		}];
+		
+	} @catch (AmazonClientException *exception) {
+		if (_progressHUD != nil) {
+			[_progressHUD hide:YES];
+			_progressHUD = nil;
+		}
+		
+		[[[UIAlertView alloc] initWithTitle:@"Upload Error" message:exception.message delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil] show];
+	}
 }
 
 - (void)_goSelectFriend {
@@ -162,12 +352,21 @@
 			 // submit
 			 _fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
 			 _fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
+			 [_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _fbID]] placeholderImage:nil];
 			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
 		 }
 	 }];
 }
 
 - (void)_goSubmitChat {
+	_progressHUD = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] delegate].window animated:YES];
+	_progressHUD.labelText = @"Submitting Chat…";
+	_progressHUD.mode = MBProgressHUDModeIndeterminate;
+	
+	[self performSelector:@selector(_submitChat) withObject:nil afterDelay:0.33];
+}
+
+- (void)_submitChat {
 	//NSData *imageData = UIImageJPEGRepresentation(self.image, 1.0);
 	
 	AmazonS3Client *s3 = [[AmazonS3Client alloc] initWithAccessKey:[[PCAppDelegate s3Credentials] objectForKey:@"key"] withSecretKey:[[PCAppDelegate s3Credentials] objectForKey:@"secret"]];
@@ -190,11 +389,6 @@
 //		UIGraphicsEndImageContext();
 		
 		NSLog(@"https://picchat-entries.s3.amazonaws.com/%@", self.filename);
-		_progressHUD = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] delegate].window animated:YES];
-		_progressHUD.labelText = @"Submitting Chat…";
-		_progressHUD.mode = MBProgressHUDModeIndeterminate;
-		_progressHUD.graceTime = 2.0;
-		_progressHUD.taskInProgress = YES;
 		
 		int photoIndex = 0;
 		NSString *imgURLs = @"";
@@ -211,6 +405,9 @@
 		
 		imgURLs = [imgURLs substringToIndex:[imgURLs length] - 1];
 		NSLog(@"URLS:[%@]", imgURLs);
+		
+		if ([_subjectName hasPrefix:@"#"])
+			_subjectName = [_subjectName substringFromIndex:1];
 		
 		AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
 		NSDictionary *params;
@@ -256,8 +453,13 @@
 			[_progressHUD hide:YES];
 			_progressHUD = nil;
 			
-			[self.navigationController dismissViewControllerAnimated:YES completion:nil];
-			[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+
+			//[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];			
+			[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+				UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
+				[navigationController setNavigationBarHidden:YES];
+				[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+			}];
 			
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 			NSLog(@"%@", [error localizedDescription]);

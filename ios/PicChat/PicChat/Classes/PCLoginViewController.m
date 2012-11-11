@@ -31,12 +31,12 @@
 - (void)loadView {
 	[super loadView];
 	
-//	int ind = (arc4random() % 4) + 1;
+	int ind = (arc4random() % 4) + 1;
 	
-//	[[Mixpanel sharedInstance] track:@"Login Screen"
-//								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
-//												 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user",
-//												 [NSString stringWithFormat:@"%d", ind], @"index", nil]];
+	[[Mixpanel sharedInstance] track:@"Login Screen"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user",
+												 [NSString stringWithFormat:@"%d", ind], @"index", nil]];
 	
 	
 	NSString *bgAsset = ([PCAppDelegate isRetina5]) ? @"firstUserExperience_Background.png" : @"firstUserExperience_Background.png";
@@ -74,9 +74,9 @@
 
 #pragma mark - Navigation
 - (void)_goFacebook {
-//	[[Mixpanel sharedInstance] track:@"Login Facebook Button"
-//								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
-//												 [NSString stringWithFormat:@"%@ - %@", [[HONAppDelegate infoForUser] objectForKey:@"id"], [[HONAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
+	[[Mixpanel sharedInstance] track:@"Login Facebook Button"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
 	
 	[FBSession openActiveSessionWithPermissions:[PCAppDelegate fbPermissions] allowLoginUI:YES completionHandler:
 	 ^(FBSession *session, FBSessionState state, NSError *error) {
@@ -86,9 +86,17 @@
 			 [[FBRequest requestForMe] startWithCompletionHandler:
 			  ^(FBRequestConnection *connection, NSDictionary<FBGraphUser> *user, NSError *error) {
 				  if (!error) {
-					  NSLog(@"user [%@]", user);
-					  
 					  [PCAppDelegate writeFBProfile:user];
+					  
+					  NSMutableArray *friends = [NSMutableArray array];
+					  [FBRequestConnection startWithGraphPath:@"me/friends" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+						  for (NSDictionary *friend in [(NSDictionary *)result objectForKey:@"data"]) {
+							  [friends addObject: [friend objectForKey:@"id"]];
+						  }
+						  
+						  NSLog(@"RETRIEVED FRIENDS");
+						  [PCAppDelegate storeFBFriends:friends];
+					  }];
 					  
 					  AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
 					  NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:

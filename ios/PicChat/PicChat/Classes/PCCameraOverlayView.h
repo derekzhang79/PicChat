@@ -12,9 +12,10 @@
 
 @protocol PCCameraOverlayViewDelegate;
 @interface PCCameraOverlayView : UIView
+-(void)updateCount:(int)count;
 
 @property(nonatomic, assign) id <PCCameraOverlayViewDelegate> delegate;
-
+@property (nonatomic, weak) NSString *subjectName;
 @end
 
 
@@ -28,4 +29,5 @@
 - (void)cameraOverlayViewChangeFlash:(PCCameraOverlayView *)cameraOverlayView;
 @optional
 - (void)cameraOverlayViewHidePreview:(PCCameraOverlayView *)cameraOverlayView;
+- (void)cameraOverlayViewShowOptions:(PCCameraOverlayView *)cameraOverlayView;
 @end

@@ -52,6 +52,16 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"facebook_url"]);
 }
 
++ (NSString *)dailySubjectName {
+	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"daily_subject"]);
+}
+
++ (NSString *)rndDefaultSubject {
+	NSArray *subjects = [[NSUserDefaults standardUserDefaults] objectForKey:@"default_subjects"];
+	return ([subjects objectAtIndex:(arc4random() % [subjects count])]);
+}
+
+
 + (BOOL)isRetina5 {
 	return ([UIScreen mainScreen].scale == 2.f && [UIScreen mainScreen].bounds.size.height == 568.0f);
 }
@@ -99,6 +109,15 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 + (BOOL)allowsFBPosting {
 	return ([[[NSUserDefaults standardUserDefaults] objectForKey:@"fb_posting"] isEqualToString:@"YES"]);
+}
+
++ (void)storeFBFriends:(NSArray *)friends {
+	[[NSUserDefaults standardUserDefaults] setObject:friends forKey:@"fb_friends"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
+}
+
++ (NSArray *)fbFriends {
+	return ([[NSUserDefaults standardUserDefaults] objectForKey:@"fb_friends"]);
 }
 
 + (void)assignChatID:(int)state {
@@ -213,6 +232,16 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 			// responsiveness when the user tags their friends.
 			FBCacheDescriptor *cacheDescriptor = [FBFriendPickerViewController cacheDescriptor];
 			[cacheDescriptor prefetchAndCacheForSession:session];
+			
+			NSMutableArray *friends = [NSMutableArray array];
+			[FBRequestConnection startWithGraphPath:@"me/friends" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
+				for (NSDictionary *friend in [(NSDictionary *)result objectForKey:@"data"]) {
+					[friends addObject: [friend objectForKey:@"id"]];
+				}
+				
+				NSLog(@"RETRIEVED FRIENDS");
+				[PCAppDelegate storeFBFriends:friends];
+			}];
 		}
 			break;
 		case FBSessionStateClosed:
@@ -294,13 +323,28 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	PFQuery *fbQuery = [PFQuery queryWithClassName:@"FacebookPaths"];
 	PFObject *fbObject = [fbQuery getObjectWithId:@"E7C1lrIB25"];
 	
+	PFQuery *dailyQuery = [PFQuery queryWithClassName:@"DailyChallenges"];
+	PFObject *dailyObject = [dailyQuery getObjectWithId:@"X0JSNV39lu"];
+	
+	PFQuery *subjectQuery = [PFQuery queryWithClassName:@"PicChatDefaultSubjects"];
+	NSMutableArray *subjects = [NSMutableArray array];
+	for (PFObject *obj in [subjectQuery findObjects])
+		[subjects addObject:[obj objectForKey:@"title"]];
+	
 	[[NSUserDefaults standardUserDefaults] setObject:[appIDObject objectForKey:@"appstore_id"] forKey:@"appstore_id"];
 	[[NSUserDefaults standardUserDefaults] setObject:[apiObject objectForKey:@"server_path"] forKey:@"server_api"];
 	[[NSUserDefaults standardUserDefaults] setObject:[NSDictionary dictionaryWithObjectsAndKeys:[s3Object objectForKey:@"key"], @"key", [s3Object objectForKey:@"secret"], @"secret", nil] forKey:@"s3_creds"];
 	[[NSUserDefaults standardUserDefaults] setObject:[fbObject objectForKey:@"canvas_url"] forKey:@"facebook_url"];
+	[[NSUserDefaults standardUserDefaults] setObject:[dailyObject objectForKey:@"subject_name"] forKey:@"daily_subject"];
+	[[NSUserDefaults standardUserDefaults] setObject:[subjects copy] forKey:@"default_subjects"];
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	
-
+	
+	[Mixpanel sharedInstanceWithToken:@"8e696526c2d9bb4800b40edc6b93aba6"];
+	[[Mixpanel sharedInstance] track:@"App Boot"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
+	
 	int boot_total = 0;
 	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"])
 		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:boot_total] forKey:@"boot_total"];

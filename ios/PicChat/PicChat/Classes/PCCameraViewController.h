@@ -10,4 +10,5 @@
 
 @interface PCCameraViewController : UIViewController <UIImagePickerControllerDelegate, UINavigationControllerDelegate>
 - (id)initWithChatID:(int)chatID;
+- (id)initWithChatID:(int)chatID withSubject:(NSString *)subject;
 @end

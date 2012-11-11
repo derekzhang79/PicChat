@@ -8,6 +8,7 @@
 
 #import "Facebook.h"
 
+#import "PCAppDelegate.h"
 #import "PCPeopleViewController.h"
 #import "PCPersonViewCell.h"
 #import "PCHeaderView.h"
@@ -52,6 +53,8 @@
 	friendsButton.backgroundColor = [UIColor redColor];
 	[friendsButton addTarget:self action:@selector(_goChallengeFriends) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:friendsButton];
+	
+	[self _goChallengeFriends];
 }
 
 - (void)_goChallengeFriends {
@@ -93,6 +96,12 @@
 			  show];
 			 
 		 } else {
+			 [self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+				 UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+				 [navigationController setNavigationBarHidden:YES];
+				 [[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+			 }];
+			 
 //			 _filename = [NSString stringWithFormat:@"%@_%@", [PCAppDelegate deviceToken], [[NSNumber numberWithLongLong:[[NSDate date] timeIntervalSince1970]] stringValue]];
 //			 _fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
 //			 _fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];

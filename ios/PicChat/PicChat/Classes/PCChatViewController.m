@@ -42,8 +42,6 @@
 		_chatVO = vo;
 		
 		[PCAppDelegate assignChatID:_chatVO.chatID];
-		
-		NSLog(@"CHAT ID:[%d][%d]", _chatVO.chatID, [PCAppDelegate chatID]);
 	}
 	
 	return (self);
@@ -52,7 +50,7 @@
 - (void)loadView {
 	[super loadView];
 	
-	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Chat"];
+	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:[NSString stringWithFormat:@"#%@", _chatVO.subjectName]];
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -114,8 +112,6 @@
 	_progressHUD = [MBProgressHUD showHUDAddedTo:[[UIApplication sharedApplication] delegate].window animated:YES];
 	_progressHUD.labelText = @"Loading Contents…";
 	_progressHUD.mode = MBProgressHUDModeIndeterminate;
-	_progressHUD.graceTime = 2.0;
-	_progressHUD.taskInProgress = YES;
 	
 	AFHTTPClient *httpClient = [[AFHTTPClient alloc] initWithBaseURL:[NSURL URLWithString:[PCAppDelegate apiServerPath]]];
 	NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:
@@ -147,6 +143,7 @@
 		
 		_refreshButton.hidden = NO;
 		[_tableView reloadData];
+		[_tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:[_entries count] - 1 inSection:0] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 		
 	} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
 		NSLog(@"%@", [error localizedDescription]);
@@ -164,12 +161,22 @@
 }
 
 - (void)_goRefresh {
+	[[Mixpanel sharedInstance] track:@"Refresh Chat"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user",
+												 nil]];
+	
 	_refreshButton.hidden = YES;
 	[self _retrieveEntries];
 }
 
 - (void)_goAddEntry {
-	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+	[[Mixpanel sharedInstance] track:@"Open Chat Camera"
+								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user",
+												 nil]];
+	
+	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] initWithChatID:_chatVO.chatID withSubject:_chatVO.subjectName]];
 	[navigationController setNavigationBarHidden:YES];
 	[self.navigationController presentViewController:navigationController animated:NO completion:nil];
 }

@@ -8,6 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		4C06F485164CB08200E7E906 /* PCChatEntryViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F484164CB08200E7E906 /* PCChatEntryViewCell.m */; };
+		4C06F48D164EEB9800E7E906 /* PCSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F48C164EEB9700E7E906 /* PCSettingsViewController.m */; };
+		4C06F491164EF63E00E7E906 /* PCSettingsViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F490164EF63E00E7E906 /* PCSettingsViewCell.m */; };
+		4C06F494164EF65700E7E906 /* PCPrivacyViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F493164EF65700E7E906 /* PCPrivacyViewController.m */; };
+		4C06F497164EF66400E7E906 /* PCSupportViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F496164EF66400E7E906 /* PCSupportViewController.m */; };
+		4C06F49A164F569F00E7E906 /* PCFacebookCaller.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C06F499164F569E00E7E906 /* PCFacebookCaller.m */; };
 		4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912741649AB1800A11555 /* PCAppRootViewController.m */; };
 		4CA258DD163DB7ED004A5423 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CA163DB7ED004A5423 /* Accounts.framework */; };
 		4CA258DE163DB7ED004A5423 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CB163DB7ED004A5423 /* AdSupport.framework */; };
@@ -173,6 +178,16 @@
 /* Begin PBXFileReference section */
 		4C06F483164CB08200E7E906 /* PCChatEntryViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCChatEntryViewCell.h; sourceTree = "<group>"; };
 		4C06F484164CB08200E7E906 /* PCChatEntryViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCChatEntryViewCell.m; sourceTree = "<group>"; };
+		4C06F48B164EEB9700E7E906 /* PCSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCSettingsViewController.h; sourceTree = "<group>"; };
+		4C06F48C164EEB9700E7E906 /* PCSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCSettingsViewController.m; sourceTree = "<group>"; };
+		4C06F48F164EF63E00E7E906 /* PCSettingsViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCSettingsViewCell.h; sourceTree = "<group>"; };
+		4C06F490164EF63E00E7E906 /* PCSettingsViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCSettingsViewCell.m; sourceTree = "<group>"; };
+		4C06F492164EF65700E7E906 /* PCPrivacyViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCPrivacyViewController.h; sourceTree = "<group>"; };
+		4C06F493164EF65700E7E906 /* PCPrivacyViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCPrivacyViewController.m; sourceTree = "<group>"; };
+		4C06F495164EF66400E7E906 /* PCSupportViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCSupportViewController.h; sourceTree = "<group>"; };
+		4C06F496164EF66400E7E906 /* PCSupportViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCSupportViewController.m; sourceTree = "<group>"; };
+		4C06F498164F569E00E7E906 /* PCFacebookCaller.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCFacebookCaller.h; sourceTree = "<group>"; };
+		4C06F499164F569E00E7E906 /* PCFacebookCaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCFacebookCaller.m; sourceTree = "<group>"; };
 		4C1912731649AB1800A11555 /* PCAppRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCAppRootViewController.h; sourceTree = "<group>"; };
 		4C1912741649AB1800A11555 /* PCAppRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCAppRootViewController.m; sourceTree = "<group>"; };
 		4CA258CA163DB7ED004A5423 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
@@ -544,6 +559,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		4C06F48E164EF24400E7E906 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				4C06F48F164EF63E00E7E906 /* PCSettingsViewCell.h */,
+				4C06F490164EF63E00E7E906 /* PCSettingsViewCell.m */,
+				4C06F48B164EEB9700E7E906 /* PCSettingsViewController.h */,
+				4C06F48C164EEB9700E7E906 /* PCSettingsViewController.m */,
+				4C06F492164EF65700E7E906 /* PCPrivacyViewController.h */,
+				4C06F493164EF65700E7E906 /* PCPrivacyViewController.m */,
+				4C06F495164EF66400E7E906 /* PCSupportViewController.h */,
+				4C06F496164EF66400E7E906 /* PCSupportViewController.m */,
+			);
+			name = Settings;
+			sourceTree = "<group>";
+		};
 		4CA258F9163DB8A3004A5423 /* Airship */ = {
 			isa = PBXGroup;
 			children = (
@@ -859,6 +889,8 @@
 				4CA25A2F163F1EF5004A5423 /* PCHeaderView.m */,
 				4C1912731649AB1800A11555 /* PCAppRootViewController.h */,
 				4C1912741649AB1800A11555 /* PCAppRootViewController.m */,
+				4C06F498164F569E00E7E906 /* PCFacebookCaller.h */,
+				4C06F499164F569E00E7E906 /* PCFacebookCaller.m */,
 			);
 			name = Root;
 			sourceTree = "<group>";
@@ -1202,6 +1234,7 @@
 				4CA259EC163DF62E004A5423 /* Camera */,
 				4CA259A7163DBE91004A5423 /* Friends */,
 				4CA259A5163DBE6F004A5423 /* Root */,
+				4C06F48E164EF24400E7E906 /* Settings */,
 				4CA259F0163DF653004A5423 /* VO */,
 			);
 			path = Classes;
@@ -1460,6 +1493,11 @@
 				4CA25AD11644E7F2004A5423 /* PCSubmitChatViewController.m in Sources */,
 				4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */,
 				4C06F485164CB08200E7E906 /* PCChatEntryViewCell.m in Sources */,
+				4C06F48D164EEB9800E7E906 /* PCSettingsViewController.m in Sources */,
+				4C06F491164EF63E00E7E906 /* PCSettingsViewCell.m in Sources */,
+				4C06F494164EF65700E7E906 /* PCPrivacyViewController.m in Sources */,
+				4C06F497164EF66400E7E906 /* PCSupportViewController.m in Sources */,
+				4C06F49A164F569F00E7E906 /* PCFacebookCaller.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
