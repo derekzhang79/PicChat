@@ -48,7 +48,7 @@
 		[_fbSwitch addTarget:self action:@selector(_goFBSwitch:) forControlEvents:UIControlEventValueChanged];
 		_fbSwitch.on = [PCAppDelegate allowsFBPosting];
 		
-		_captions = [NSArray arrayWithObjects:@"", @"Notifications", @"Facebook Posting", @"Logout", @"Privacy Policy", @"", nil];
+		_captions = [NSArray arrayWithObjects:@"", @"Notifications", @"FB Timeline", @"Logout", @"Privacy Policy", @"", nil];
 	}
 	
 	return (self);
@@ -178,7 +178,11 @@
 
 #pragma mark - TableView Delegates
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return (70.0);
+	if (indexPath.row == 0 || indexPath.row == 5)
+		return (20.0);
+	
+	else
+		return (70.0);
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {

@@ -47,9 +47,9 @@
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	backButton.frame = CGRectMake(5.0, 0.0, 74.0, 44.0);
-	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
-	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
+	backButton.frame = CGRectMake(5.0, 5.0, 64.0, 34.0);
+	[backButton setBackgroundImage:[UIImage imageNamed:@"cameraBackButton_nonActive.png"] forState:UIControlStateNormal];
+	[backButton setBackgroundImage:[UIImage imageNamed:@"cameraBackButton_Active.png"] forState:UIControlStateHighlighted];
 	[backButton addTarget:self action:@selector(_goCamera) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:backButton];
 	
@@ -59,7 +59,7 @@
 	[headerView addSubview:activityIndicatorView];
 	
 	_refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	_refreshButton.frame = CGRectMake(270.0, 0.0, 50.0, 45.0);
+	_refreshButton.frame = CGRectMake(275.0, 5.0, 44.0, 34.0);
 	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_nonActive.png"] forState:UIControlStateNormal];
 	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_Active.png"] forState:UIControlStateHighlighted];
 	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];
@@ -180,7 +180,11 @@
 
 #pragma mark - TableView Delegates
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-	return (70.0);
+	if (indexPath.row == 0)
+		return (20.0);
+	
+	else
+		return (70.0);
 }
 
 - (NSIndexPath *)tableView:(UITableView *)tableView willSelectRowAtIndexPath:(NSIndexPath *)indexPath {

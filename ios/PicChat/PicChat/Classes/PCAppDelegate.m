@@ -27,7 +27,8 @@
 
 NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:SCSessionStateChangedNotification";
 
-@interface PCAppDelegate()
+@interface PCAppDelegate() <UIAlertViewDelegate, UAPushNotificationDelegate>
+@property (nonatomic, strong) UIAlertView *networkAlertView;
 - (void)_registerUser;
 @end
 
@@ -64,6 +65,37 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 + (BOOL)isRetina5 {
 	return ([UIScreen mainScreen].scale == 2.f && [UIScreen mainScreen].bounds.size.height == 568.0f);
+}
+
++ (BOOL)hasNetwork {
+	//Reachability *wifiReachability = [Reachability reachabilityForLocalWiFi];
+	//[[Reachability reachabilityForLocalWiFi] startNotifier];
+	
+	//return ([wifiReachability currentReachabilityStatus] == kReachableViaWiFi);
+	
+	[[Reachability reachabilityForInternetConnection] startNotifier];
+	NetworkStatus networkStatus = [[Reachability reachabilityForInternetConnection] currentReachabilityStatus];
+	
+	return !(networkStatus == NotReachable);
+}
+
++ (BOOL)canPingServers {
+	NetworkStatus apiStatus = [[Reachability reachabilityWithHostName:[[[PCAppDelegate apiServerPath] componentsSeparatedByString: @"/"] objectAtIndex:2]] currentReachabilityStatus];
+	NetworkStatus parseStatus = [[Reachability reachabilityWithHostName:@"api.parse.com"] currentReachabilityStatus];
+	
+	return (!(apiStatus == NotReachable) && !(parseStatus == NotReachable));
+}
+
++ (BOOL)canPingAPIServer {
+	NetworkStatus apiStatus = [[Reachability reachabilityWithHostName:[[[PCAppDelegate apiServerPath] componentsSeparatedByString: @"/"] objectAtIndex:2]] currentReachabilityStatus];
+	
+	return (!(apiStatus == NotReachable));
+}
+
++ (BOOL)canPingParseServer {
+	NetworkStatus parseStatus = [[Reachability reachabilityWithHostName:@"api.parse.com"] currentReachabilityStatus];
+	
+	return (!(parseStatus == NotReachable));
 }
 
 + (NSArray *)fbPermissions {
@@ -296,106 +328,127 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-	
-	NSMutableDictionary *takeOffOptions = [[NSMutableDictionary alloc] init];
-	[takeOffOptions setValue:launchOptions forKey:UAirshipTakeOffOptionsLaunchOptionsKey];
-	[UAirship takeOff:takeOffOptions];
-	[[UAPush shared] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
-	
-	[Parse setApplicationId:@"Gi7eI4v6r9pEZmSQ0wchKKelOgg2PIG9pKE160uV" clientKey:@"Bv82pH4YB8EiXZG4V0E2KjEVtpLp4Xds25c5AkLP"];
-	[PFUser enableAutomaticUser];
-	
-	PFACL *defaultACL = [PFACL ACL];
-	
-	// If you would like all objects to be private by default, remove this line.
-	[defaultACL setPublicReadAccess:YES];
-	[PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
-	
-	PFQuery *appIDQuery = [PFQuery queryWithClassName:@"AppIDs"];
-	PFObject *appIDObject = [appIDQuery getObjectWithId:@"srHSbLC5Sf"];
-	
-	PFQuery *apiQuery = [PFQuery queryWithClassName:@"APIs"];
-	PFObject *apiObject = [apiQuery getObjectWithId:@"l3MBvtsJQC"];
-	
-	PFQuery *s3Query = [PFQuery queryWithClassName:@"S3Credentials"];
-	PFObject *s3Object = [s3Query getObjectWithId:@"zofEGq6sLT"];
-	
-	PFQuery *fbQuery = [PFQuery queryWithClassName:@"FacebookPaths"];
-	PFObject *fbObject = [fbQuery getObjectWithId:@"E7C1lrIB25"];
-	
-	PFQuery *dailyQuery = [PFQuery queryWithClassName:@"DailyChallenges"];
-	PFObject *dailyObject = [dailyQuery getObjectWithId:@"X0JSNV39lu"];
-	
-	PFQuery *subjectQuery = [PFQuery queryWithClassName:@"PicChatDefaultSubjects"];
-	NSMutableArray *subjects = [NSMutableArray array];
-	for (PFObject *obj in [subjectQuery findObjects])
-		[subjects addObject:[obj objectForKey:@"title"]];
-	
-	[[NSUserDefaults standardUserDefaults] setObject:[appIDObject objectForKey:@"appstore_id"] forKey:@"appstore_id"];
-	[[NSUserDefaults standardUserDefaults] setObject:[apiObject objectForKey:@"server_path"] forKey:@"server_api"];
-	[[NSUserDefaults standardUserDefaults] setObject:[NSDictionary dictionaryWithObjectsAndKeys:[s3Object objectForKey:@"key"], @"key", [s3Object objectForKey:@"secret"], @"secret", nil] forKey:@"s3_creds"];
-	[[NSUserDefaults standardUserDefaults] setObject:[fbObject objectForKey:@"canvas_url"] forKey:@"facebook_url"];
-	[[NSUserDefaults standardUserDefaults] setObject:[dailyObject objectForKey:@"subject_name"] forKey:@"daily_subject"];
-	[[NSUserDefaults standardUserDefaults] setObject:[subjects copy] forKey:@"default_subjects"];
-	[[NSUserDefaults standardUserDefaults] synchronize];
-	
-	
-	[Mixpanel sharedInstanceWithToken:@"8e696526c2d9bb4800b40edc6b93aba6"];
-	[[Mixpanel sharedInstance] track:@"App Boot"
-								 properties:[NSDictionary dictionaryWithObjectsAndKeys:
-												 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
-	
-	int boot_total = 0;
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"])
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:boot_total] forKey:@"boot_total"];
-	
-	else {
-		boot_total = [[[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"] intValue];
-		boot_total++;
+	if ([PCAppDelegate hasNetwork] && [PCAppDelegate canPingParseServer]) {
+		NSMutableDictionary *takeOffOptions = [[NSMutableDictionary alloc] init];
+		[takeOffOptions setValue:launchOptions forKey:UAirshipTakeOffOptionsLaunchOptionsKey];
+		[UAirship takeOff:takeOffOptions];
+		[[UAPush shared] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+		[UAPush shared].delegate = self;
 		
-		[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:boot_total] forKey:@"boot_total"];
-	}
-	
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"install_date"])
-		[[NSUserDefaults standardUserDefaults] setObject:[NSDate new] forKey:@"install_date"];
-	
-	if (![[NSUserDefaults standardUserDefaults] objectForKey:@"fb_posting"])
-		[PCAppDelegate setAllowsFBPosting:NO];
-	
-	[PCAppDelegate assignChatID:0];
-	
-	self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-	self.window.backgroundColor = [UIColor whiteColor];
-	
+		[Parse setApplicationId:@"Gi7eI4v6r9pEZmSQ0wchKKelOgg2PIG9pKE160uV" clientKey:@"Bv82pH4YB8EiXZG4V0E2KjEVtpLp4Xds25c5AkLP"];
+		[PFUser enableAutomaticUser];
+		
+		PFACL *defaultACL = [PFACL ACL];
+		
+		// If you would like all objects to be private by default, remove this line.
+		[defaultACL setPublicReadAccess:YES];
+		[PFACL setDefaultACL:defaultACL withAccessForCurrentUser:YES];
+		
+		PFQuery *appIDQuery = [PFQuery queryWithClassName:@"AppIDs"];
+		PFObject *appIDObject = [appIDQuery getObjectWithId:@"srHSbLC5Sf"];
+		
+		PFQuery *apiQuery = [PFQuery queryWithClassName:@"APIs"];
+		PFObject *apiObject = [apiQuery getObjectWithId:@"l3MBvtsJQC"];
+		
+		PFQuery *s3Query = [PFQuery queryWithClassName:@"S3Credentials"];
+		PFObject *s3Object = [s3Query getObjectWithId:@"zofEGq6sLT"];
+		
+		PFQuery *fbQuery = [PFQuery queryWithClassName:@"FacebookPaths"];
+		PFObject *fbObject = [fbQuery getObjectWithId:@"E7C1lrIB25"];
+		
+		PFQuery *dailyQuery = [PFQuery queryWithClassName:@"DailyChallenges"];
+		PFObject *dailyObject = [dailyQuery getObjectWithId:@"X0JSNV39lu"];
+		
+		PFQuery *subjectQuery = [PFQuery queryWithClassName:@"PicChatDefaultSubjects"];
+		NSMutableArray *subjects = [NSMutableArray array];
+		for (PFObject *obj in [subjectQuery findObjects])
+			[subjects addObject:[obj objectForKey:@"title"]];
+		
+		[[NSUserDefaults standardUserDefaults] setObject:[appIDObject objectForKey:@"appstore_id"] forKey:@"appstore_id"];
+		[[NSUserDefaults standardUserDefaults] setObject:[apiObject objectForKey:@"server_path"] forKey:@"server_api"];
+		[[NSUserDefaults standardUserDefaults] setObject:[NSDictionary dictionaryWithObjectsAndKeys:[s3Object objectForKey:@"key"], @"key", [s3Object objectForKey:@"secret"], @"secret", nil] forKey:@"s3_creds"];
+		[[NSUserDefaults standardUserDefaults] setObject:[fbObject objectForKey:@"canvas_url"] forKey:@"facebook_url"];
+		[[NSUserDefaults standardUserDefaults] setObject:[dailyObject objectForKey:@"subject_name"] forKey:@"daily_subject"];
+		[[NSUserDefaults standardUserDefaults] setObject:[subjects copy] forKey:@"default_subjects"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+		
+		
+		[Mixpanel sharedInstanceWithToken:@"8e696526c2d9bb4800b40edc6b93aba6"];
+		[[Mixpanel sharedInstance] track:@"App Boot"
+									 properties:[NSDictionary dictionaryWithObjectsAndKeys:
+													 [NSString stringWithFormat:@"%@ - %@", [[PCAppDelegate infoForUser] objectForKey:@"id"], [[PCAppDelegate infoForUser] objectForKey:@"name"]], @"user", nil]];
+		
+		int boot_total = 0;
+		if (![[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"]) {
+			[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:boot_total] forKey:@"boot_total"];
+		
+			UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Welcome to PicChat! A Facebook picture chat client for your iPhone or iPod Touch."
+																				 message:@"Please note that we do NOT post any images to your Facebook wall without your permission to turn on timeline settings. The Timeline setting can be found in the Settings menu above."
+																				delegate:nil
+																	cancelButtonTitle:@"OK"
+																	otherButtonTitles:nil];
+			[alertView show];
+		
+		} else {
+			boot_total = [[[NSUserDefaults standardUserDefaults] objectForKey:@"boot_total"] intValue];
+			boot_total++;
+			
+			[[NSUserDefaults standardUserDefaults] setObject:[NSNumber numberWithInt:boot_total] forKey:@"boot_total"];
+		}
+		
+		if (![[NSUserDefaults standardUserDefaults] objectForKey:@"install_date"])
+			[[NSUserDefaults standardUserDefaults] setObject:[NSDate new] forKey:@"install_date"];
+		
+		
+		if (boot_total == 5) {
+			UIAlertView *alert = [[UIAlertView alloc]
+										 initWithTitle:@"Rate PicChat"
+										 message:@"Why not rate PicChat in the app store!"
+										 delegate:self
+										 cancelButtonTitle:nil
+										 otherButtonTitles:@"No Thanks", @"Ask Me Later", @"Visit App Store", nil];
+			
+			[alert show];
+		}
+		
+		if (![[NSUserDefaults standardUserDefaults] objectForKey:@"fb_posting"])
+			[PCAppDelegate setAllowsFBPosting:NO];
+		
+		[PCAppDelegate assignChatID:0];
+		
+		self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
+		self.window.backgroundColor = [UIColor whiteColor];
+		
 
-	UIViewController *historyViewController, *appRootViewController, *peopleViewController;
-	historyViewController = [[PCHistoryViewController alloc] init];
-	appRootViewController = [[PCAppRootViewController alloc] init];
-	peopleViewController = [[PCPeopleViewController alloc] init];
-	
-	UINavigationController *navController1 = [[UINavigationController alloc] initWithRootViewController:historyViewController];
-	UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:appRootViewController];
-	UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:peopleViewController];
-	
-	[navController1 setNavigationBarHidden:YES];
-	[navController2 setNavigationBarHidden:YES];
-	[navController3 setNavigationBarHidden:YES];
-	
-	self.tabBarController = [[PCTabBarController alloc] init];
-	self.tabBarController.delegate = self;
-	self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-	
-	self.window.rootViewController = [[PCAppRootViewController alloc] init];
-	[self.window makeKeyAndVisible];
-	
-	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
-	[navigationController setNavigationBarHidden:YES];
-	[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
-	
-	if (![self openSession]) {
-		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+//		UIViewController *historyViewController, *appRootViewController, *peopleViewController;
+//		historyViewController = [[PCHistoryViewController alloc] init];
+//		appRootViewController = [[PCAppRootViewController alloc] init];
+//		peopleViewController = [[PCPeopleViewController alloc] init];
+//		
+//		UINavigationController *navController1 = [[UINavigationController alloc] initWithRootViewController:historyViewController];
+//		UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:appRootViewController];
+//		UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:peopleViewController];
+//		
+//		[navController1 setNavigationBarHidden:YES];
+//		[navController2 setNavigationBarHidden:YES];
+//		[navController3 setNavigationBarHidden:YES];
+//		
+//		self.tabBarController = [[PCTabBarController alloc] init];
+//		self.tabBarController.delegate = self;
+//		self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
+		
+		self.window.rootViewController = [[PCAppRootViewController alloc] init];
+		[self.window makeKeyAndVisible];
+		
+		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
 		[navigationController setNavigationBarHidden:YES];
 		[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+		
+		if (![self openSession]) {
+			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+			[navigationController setNavigationBarHidden:YES];
+			[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+		}
 	}
 	
 	return (YES);
@@ -405,6 +458,19 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 }
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
+//	NSDate *alertTime = [[NSDate date] dateByAddingTimeInterval:10];
+//	UIApplication *app = [UIApplication sharedApplication];
+//	
+//	UILocalNotification *notifyAlarm = [[UILocalNotification alloc] init];
+//	if (notifyAlarm) {
+//		notifyAlarm.fireDate = alertTime;
+//		notifyAlarm.timeZone = [NSTimeZone defaultTimeZone];
+//		notifyAlarm.repeatInterval = 0;
+//		notifyAlarm.soundName = UILocalNotificationDefaultSoundName;
+//		notifyAlarm.alertBody = @"Staff meeting in 30 minutes";
+//		
+//		[app scheduleLocalNotification:notifyAlarm];
+//	}
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application {
@@ -460,7 +526,14 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	[[UAPush shared] handleNotification:userInfo applicationState:appState];
 	[[UAPush shared] resetBadge]; // zero badge after push received
 	
-	//[UAPush shared].delegate = self;
+//	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:([[userInfo objectForKey:@"type"] intValue] == 1) ? @"New Chat" : @"Added Chat"
+//																		 message:[userInfo objectForKey:@"alert"]
+//																		delegate:nil
+//															cancelButtonTitle:@"OK"
+//															otherButtonTitles:nil];
+//	[alertView show];
+	
+	
 	
 	/*
 	 int type_id = [[userInfo objectForKey:@"type"] intValue];
@@ -496,18 +569,30 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	 UIPasteboard *pasteboard = [UIPasteboard generalPasteboard];
 	 [pasteboard setValue:redeemCode forPasteboardType:@"public.utf8-plain-text"];
 	 }
-	 
-	 UILocalNotification *localNotification = [[[UILocalNotification alloc] init] autorelease];
-	 localNotification.fireDate = [[NSDate alloc] initWithTimeIntervalSinceNow:5];
-	 localNotification.alertBody = [NSString stringWithFormat:@"%d", [[userInfo objectForKey:@"type"] intValue]];;
-	 localNotification.soundName = UILocalNotificationDefaultSoundName;
-	 localNotification.applicationIconBadgeNumber = 3;
-	 
-	 NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:@"Object 1", @"Key 1", @"Object 2", @"Key 2", nil];
-	 localNotification.userInfo = infoDict;
-	 
-	 [[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
 	 */
+	
+	
+	
+//	UILocalNotification *localNotification = [[UILocalNotification alloc] init];
+//	localNotification.fireDate = [[NSDate date] dateByAddingTimeInterval:1];
+//	localNotification.timeZone = [NSTimeZone defaultTimeZone];
+//	localNotification.alertBody = [NSString stringWithFormat:@"%d", [[userInfo objectForKey:@"type"] intValue]];
+//	localNotification.soundName = UILocalNotificationDefaultSoundName;
+//	localNotification.applicationIconBadgeNumber = 0;
+//	localNotification.repeatInterval = 0;
+//	localNotification.userInfo = [NSDictionary dictionaryWithObjectsAndKeys:@"Object 1", @"Key 1", @"Object 2", @"Key 2", nil];
+//	 
+//	[[UIApplication sharedApplication] scheduleLocalNotification:localNotification];
+	 
+}
+
+- (void)displayNotificationAlert:(NSString *)alertMessage {
+	UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:alertMessage
+																		 message:@""
+																		delegate:nil
+															cancelButtonTitle:@"OK"
+															otherButtonTitles:nil];
+	[alertView show];
 }
 
 - (void)_registerUser {
@@ -670,6 +755,30 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 }
 
 - (void)tabBarController:(UITabBarController *)tabBarController didEndCustomizingViewControllers:(NSArray *)viewControllers changed:(BOOL)changed {
+}
+
+
+#pragma mark - AlertView delegates
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex {
+	
+	if (alertView == _networkAlertView)
+		NSLog(@"EXIT APP");//exit(0);
+	
+	else {
+		switch(buttonIndex) {
+			case 0:
+				break;
+				
+			case 1:
+				[[NSUserDefaults standardUserDefaults] setObject:[NSDate new] forKey:@"install_date"];
+				[[NSUserDefaults standardUserDefaults] synchronize];
+				break;
+				
+			case 2:
+				[[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"itms://itunes.apple.com/us/app/id%@?mt=8", [[NSUserDefaults standardUserDefaults] objectForKey:@"appstore_id"]]]];
+				break;
+		}
+	}
 }
 
 @end

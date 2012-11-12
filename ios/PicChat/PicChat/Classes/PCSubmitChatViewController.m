@@ -53,6 +53,7 @@
 
 - (id)initWithPhotos:(NSArray *)photos {
 	if ((self = [self init])) {
+		_photoCounter = 0;
 		_photos = photos;
 		_chatID = 0;
 		_fbID = @"";
@@ -63,6 +64,7 @@
 
 - (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID {
 	if ((self = [self init])) {
+		_photoCounter = 0;
 		_photos = photos;
 		_chatID = chatID;
 		_fbID = @"";
@@ -73,6 +75,7 @@
 
 - (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID withSubject:(NSString *)subject {
 	if ((self = [self init])) {
+		_photoCounter = 0;
 		_photos = photos;
 		_chatID = chatID;
 		_fbID = @"";
@@ -84,6 +87,7 @@
 
 - (id)initWithPhotos:(NSArray *)photos withChatID:(int)chatID withSubject:(NSString *)subject withFBID:(NSString *)fbID withFBName:(NSString *)fbName {
 	if ((self = [self init])) {
+		_photoCounter = 0;
 		_photos = photos;
 		_chatID = chatID;
 		_fbID = fbID;
@@ -95,6 +99,7 @@
 
 - (id)initWithPhotos:(NSArray *)photos withSubject:(NSString *)subject {
 	if ((self = [self init])) {
+		_photoCounter = 0;
 		_photos = photos;
 		_chatID = 0;
 		_subjectName = subject;
@@ -107,7 +112,7 @@
 - (void)loadView {
 	[super loadView];
 	
-	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Select Person"];
+	PCHeaderView *headerView = [[PCHeaderView alloc] initWithTitle:@"Preview"];
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
@@ -117,11 +122,16 @@
 	[backButton addTarget:self action:@selector(_goBack) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:backButton];
 	
-	_photoImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 55.0, 300.0, 400.0)];
-	_photoImgView.image = [_photos objectAtIndex:0];
-	[self.view addSubview:_photoImgView];
+	UIView *holderView = [[UIView alloc] initWithFrame:CGRectMake(7.0, 55.0, 306.0, 306.0)];
+	holderView.clipsToBounds = YES;
+	[self.view addSubview:holderView];
 	
-	_photoTimer = [NSTimer scheduledTimerWithTimeInterval:0.33 target:self selector:@selector(_nextPhoto) userInfo:nil repeats:YES];
+	_photoImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 306.0, 408.0)];
+	_photoImgView.image = [_photos objectAtIndex:0];
+	[holderView addSubview:_photoImgView];
+	
+	if ([_photos count] > 1)
+		_photoTimer = [NSTimer scheduledTimerWithTimeInterval:0.33 target:self selector:@selector(_nextPhoto) userInfo:nil repeats:YES];
 	
 	_recipientImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 55.0, 50.0, 50.0)];
 	
@@ -144,42 +154,29 @@
 	[self.view addSubview:_subjectTextField];
 	
 	_editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	_editButton.frame = CGRectMake(265.0, 60.0, 44.0, 44.0);
-	[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_nonActive.png"] forState:UIControlStateNormal];
-	[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_Active.png"] forState:UIControlStateHighlighted];
+	_editButton.frame = CGRectMake(265.0, 55.0, 34.0, 34.0);
+	[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_nonActive.png"] forState:UIControlStateNormal];
+	[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_Active.png"] forState:UIControlStateHighlighted];
 	[_editButton addTarget:self action:@selector(_goEditSubject) forControlEvents:UIControlEventTouchUpInside];
 	[self.view addSubview:_editButton];
 	
 	NSLog(@"CHAT ID:[%d][%@]", [PCAppDelegate chatID], _fbID);
 	
-	UIButton *randomButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	randomButton.frame = CGRectMake(18.0, 278.0, 284.0, 49.0);
-//	[randomButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
-//	[randomButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
-	[randomButton setBackgroundColor:[UIColor redColor]];
-	[randomButton setTitle:@"RANDOM" forState:UIControlStateNormal];
-	[randomButton addTarget:self action:@selector(_goRandomChat) forControlEvents:UIControlEventTouchUpInside];
-	randomButton.hidden = ([PCAppDelegate chatID] != 0);
-	[self.view addSubview:randomButton];
-	
 	UIButton *friendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	friendButton.frame = CGRectMake(18.0, 338.0, 284.0, 49.0);
-//	[friendButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
-//	[friendButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
-	[friendButton setBackgroundColor:[UIColor greenColor]];
-	[friendButton setTitle:@"FRIENDS" forState:UIControlStateNormal];
+	friendButton.frame = CGRectMake(0.0, 278.0, 320.0, 64.0);
+	[friendButton setBackgroundImage:[UIImage imageNamed:@"selectFacebookFriendButton_nonActive.png"] forState:UIControlStateNormal];
+	[friendButton setBackgroundImage:[UIImage imageNamed:@"selectFacebookFriendButton_Active.png"] forState:UIControlStateHighlighted];
 	[friendButton addTarget:self action:@selector(_goSelectFriend) forControlEvents:UIControlEventTouchUpInside];
 	friendButton.hidden = ([PCAppDelegate chatID] != 0);
 	[self.view addSubview:friendButton];
 	
-	UIButton *submitButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	submitButton.frame = CGRectMake(18.0, 398.0, 284.0, 49.0);
-//	[submitButton setBackgroundImage:[UIImage imageNamed:@"challengeRandomButton_nonActive.png"] forState:UIControlStateNormal];
-//	[submitButton setBackgroundImage:[UIImage imageNamed:@"challengeRandomButton_Active.png"] forState:UIControlStateHighlighted];
-	[submitButton setTitle:@"SUBMIT" forState:UIControlStateNormal];
-	[submitButton addTarget:self action:@selector(_goSubmitChat) forControlEvents:UIControlEventTouchUpInside];
-	[submitButton setBackgroundColor:[UIColor blueColor]];
-	[self.view addSubview:submitButton];
+	UIButton *randomButton = [UIButton buttonWithType:UIButtonTypeCustom];
+	randomButton.frame = CGRectMake(0.0, 338.0, 320.0, 64.0);
+	[randomButton setBackgroundImage:[UIImage imageNamed:@"selectRandomFriendButton_nonActive.png"] forState:UIControlStateNormal];
+	[randomButton setBackgroundImage:[UIImage imageNamed:@"selectRandomFriendButton_Active.png"] forState:UIControlStateHighlighted];
+	[randomButton addTarget:self action:@selector(_goRandomChat) forControlEvents:UIControlEventTouchUpInside];
+	randomButton.hidden = ([PCAppDelegate chatID] != 0);
+	[self.view addSubview:randomButton];
 }
 
 - (void)viewDidLoad {
@@ -354,6 +351,8 @@
 			 _fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
 			 [_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _fbID]] placeholderImage:nil];
 			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
+			 
+			 [self _goSubmitChat];
 		 }
 	 }];
 }
@@ -405,6 +404,8 @@
 		
 		imgURLs = [imgURLs substringToIndex:[imgURLs length] - 1];
 		NSLog(@"URLS:[%@]", imgURLs);
+		
+		
 		
 		if ([_subjectName hasPrefix:@"#"])
 			_subjectName = [_subjectName substringFromIndex:1];

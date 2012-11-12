@@ -29,23 +29,23 @@
 		[self addSubview:headerView];
 		
 		UIButton *flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		flashButton.frame = CGRectMake(10.0, 0.0, 94.0, 64.0);
-		[flashButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_nonActive.png"] forState:UIControlStateNormal];
-		[flashButton setBackgroundImage:[UIImage imageNamed:@"effectsButton_Active.png"] forState:UIControlStateHighlighted];
+		flashButton.frame = CGRectMake(10.0, 0.0, 84.0, 44.0);
+		[flashButton setBackgroundImage:[UIImage imageNamed:@"cameraRollButton_nonActive.png"] forState:UIControlStateNormal];
+		[flashButton setBackgroundImage:[UIImage imageNamed:@"cameraRollButton_Active.png"] forState:UIControlStateHighlighted];
 		[flashButton addTarget:self action:@selector(_goFlashToggle) forControlEvents:UIControlEventTouchUpInside];
 		[headerView addSubview:flashButton];
 		
 		UIButton *optionsButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		optionsButton.frame = CGRectMake(120.0, 0.0, 94.0, 64.0);
-		[optionsButton setBackgroundImage:[UIImage imageNamed:@"optionsButton_nonActive.png"] forState:UIControlStateNormal];
-		[optionsButton setBackgroundImage:[UIImage imageNamed:@"optionsButton_Active.png"] forState:UIControlStateHighlighted];
+		optionsButton.frame = CGRectMake(93.0, 0.0, 134.0, 44.0);
+		[optionsButton setBackgroundImage:[UIImage imageNamed:@"settingsButton_nonActive.png"] forState:UIControlStateNormal];
+		[optionsButton setBackgroundImage:[UIImage imageNamed:@"settingsButton_Active.png"] forState:UIControlStateHighlighted];
 		[optionsButton addTarget:self action:@selector(_goOptions) forControlEvents:UIControlEventTouchUpInside];
 		[headerView addSubview:optionsButton];
 		
 		UIButton *changeCameraButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		changeCameraButton.frame = CGRectMake(220.0, 0.0, 94.0, 64.0);
-		[changeCameraButton setBackgroundImage:[UIImage imageNamed:@"flipBoard_nonActive.png"] forState:UIControlStateNormal];
-		[changeCameraButton setBackgroundImage:[UIImage imageNamed:@"flipBoard_Active.png"] forState:UIControlStateHighlighted];
+		changeCameraButton.frame = CGRectMake(230.0, 0.0, 84.0, 44.0);
+		[changeCameraButton setBackgroundImage:[UIImage imageNamed:@"cameraFlipButton_nonActive.png"] forState:UIControlStateNormal];
+		[changeCameraButton setBackgroundImage:[UIImage imageNamed:@"cameraFlipButton_Active.png"] forState:UIControlStateHighlighted];
 		[changeCameraButton addTarget:self action:@selector(_goFlipCamera) forControlEvents:UIControlEventTouchUpInside];
 		[headerView addSubview:changeCameraButton];
 		
@@ -64,35 +64,35 @@
 		[self addSubview:_subjectTextField];
 		
 		_editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		_editButton.frame = CGRectMake(265.0, 60.0, 44.0, 44.0);
-		[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_nonActive.png"] forState:UIControlStateNormal];
-		[_editButton setBackgroundImage:[UIImage imageNamed:@"closeXButton_Active.png"] forState:UIControlStateHighlighted];
+		_editButton.frame = CGRectMake(265.0, 55.0, 34.0, 34.0);
+		[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_nonActive.png"] forState:UIControlStateNormal];
+		[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_Active.png"] forState:UIControlStateHighlighted];
 		[_editButton addTarget:self action:@selector(_goEditSubject) forControlEvents:UIControlEventTouchUpInside];
 		[self addSubview:_editButton];
 		
-		UIImageView *footerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, frame.size.height - 48.0, 320.0, 48.0)];
-		footerImgView.image = [UIImage imageNamed:@"footerBG.png"];
+		UIImageView *footerImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, frame.size.height - 96.0, 320.0, 96.0)];
+		footerImgView.image = [UIImage imageNamed:@"cameraAFooterBG.png"];
 		footerImgView.userInteractionEnabled = YES;
 		[self addSubview:footerImgView];
 		
 		UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		leftButton.frame = CGRectMake(0.0, 0.0, 64.0, 48.0);
-		[leftButton setBackgroundImage:[UIImage imageNamed:@"leftIcon_nonActive.png"] forState:UIControlStateNormal];
-		[leftButton setBackgroundImage:[UIImage imageNamed:@"leftIcon_Active.png"] forState:UIControlStateHighlighted];
+		leftButton.frame = CGRectMake(0.0, ([PCAppDelegate chatID] == 0) ? 20.0 : 27.0, 64.0, ([PCAppDelegate chatID] == 0) ? 64.0 : 49.0);
+		[leftButton setBackgroundImage:[UIImage imageNamed:([PCAppDelegate chatID] == 0) ? @"chatButton_nonActive.png" : @"closeButton_nonActive.png"] forState:UIControlStateNormal];
+		[leftButton setBackgroundImage:[UIImage imageNamed:([PCAppDelegate chatID] == 0) ? @"chatButton_Active.png" : @"closeButton_Active.png"] forState:UIControlStateHighlighted];
 		[leftButton addTarget:self action:@selector(_goLeft) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:leftButton];
 		
 		UIButton *midButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		midButton.frame = CGRectMake(64.0, 0.0, 191.0, 48.0);
-		[midButton setBackgroundImage:[UIImage imageNamed:@"middleIcon_nonActive.png"] forState:UIControlStateNormal];
-		[midButton setBackgroundImage:[UIImage imageNamed:@"middleIcon_Active.png"] forState:UIControlStateHighlighted];
+		midButton.frame = CGRectMake(113.0, 0.0, 94.0, 94.0);
+		[midButton setBackgroundImage:[UIImage imageNamed:@"cameraAPlayButton_nonActive.png"] forState:UIControlStateNormal];
+		[midButton setBackgroundImage:[UIImage imageNamed:@"cameraAPlayButton_Active.png"] forState:UIControlStateHighlighted];
 		[midButton addTarget:self action:@selector(_goTakePhoto) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:midButton];
 		
 		UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		rightButton.frame = CGRectMake(255.0, 0.0, 64.0, 48.0);
-		[rightButton setBackgroundImage:[UIImage imageNamed:@"rightIcon_nonActive.png"] forState:UIControlStateNormal];
-		[rightButton setBackgroundImage:[UIImage imageNamed:@"rightIcon_Active.png"] forState:UIControlStateHighlighted];
+		rightButton.frame = CGRectMake(225.0, 20.0, 94.0, 64.0);
+		[rightButton setBackgroundImage:[UIImage imageNamed:@"inviteFriends_nonActive.png"] forState:UIControlStateNormal];
+		[rightButton setBackgroundImage:[UIImage imageNamed:@"inviteFriends_Active.png"] forState:UIControlStateHighlighted];
 		[rightButton addTarget:self action:@selector(_goRight) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:rightButton];
 		

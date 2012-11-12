@@ -61,10 +61,10 @@ extern NSString *const SCSessionStateChangedNotification;
 + (NSArray *)fbPermissions;
 //
 + (BOOL)isRetina5;
-//+ (BOOL)hasNetwork;
-//+ (BOOL)canPingServers;
-//+ (BOOL)canPingAPIServer;
-//+ (BOOL)canPingParseServer;
++ (BOOL)hasNetwork;
++ (BOOL)canPingServers;
++ (BOOL)canPingAPIServer;
++ (BOOL)canPingParseServer;
 
 + (UIFont *)helveticaNeueFontBold;
 + (UIFont *)helveticaNeueFontMedium;

@@ -41,6 +41,7 @@
 - (id)initAsTopCell {
 	if ((self = [self init])) {
 //		_isNewChats = isNewList;
+		_bgImgView.frame = CGRectMake(0.0, 0.0, 320.0, 20.0);
 		_bgImgView.image = [UIImage imageNamed:@"headerTableRow.png"];
 		
 //		_toggleImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 20.0, 169.0, 44.0)];
@@ -87,11 +88,15 @@
 		_participantImgView.backgroundColor = [UIColor colorWithWhite:0.85 alpha:1.0];
 		[self addSubview:_participantImgView];
 		
-		_participantLabel = [[UILabel alloc] initWithFrame:CGRectMake(104.0, 19.0, 200.0, 16.0)];
+		_participantLabel = [[UILabel alloc] initWithFrame:CGRectMake(90.0, 27.0, 200.0, 16.0)];
 		_participantLabel.font = [[PCAppDelegate helveticaNeueFontBold] fontWithSize:14];
 		_participantLabel.textColor = [PCAppDelegate blueTxtColor];
 		_participantLabel.backgroundColor = [UIColor clearColor];
 		[self addSubview:_participantLabel];
+		
+		UIImageView *chevronImgView = [[UIImageView alloc] initWithFrame:CGRectMake(270.0, 23.0, 24.0, 24.0)];
+		chevronImgView.image = [UIImage imageNamed:@"chevron.png"];
+		[self addSubview:chevronImgView];
 	}
 	
 	return (self);
@@ -101,7 +106,7 @@
 	_chatVO = chatVO;
 	
 	[_participantImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _chatVO.participantFB]] placeholderImage:nil];
-	_participantLabel.text = _chatVO.participantName;
+	_participantLabel.text = [NSString stringWithFormat:@"#%@ with %@", _chatVO.subjectName, _chatVO.participantName];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

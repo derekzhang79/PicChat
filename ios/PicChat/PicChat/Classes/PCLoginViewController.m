@@ -39,7 +39,7 @@
 												 [NSString stringWithFormat:@"%d", ind], @"index", nil]];
 	
 	
-	NSString *bgAsset = ([PCAppDelegate isRetina5]) ? @"firstUserExperience_Background.png" : @"firstUserExperience_Background.png";
+	NSString *bgAsset = ([PCAppDelegate isRetina5]) ? @"firstUserExperience_Background-568h.png" : @"firstUserExperience_Background.png";
 	
 	UIImageView *bgImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 320.0, ([PCAppDelegate isRetina5]) ? 548.0 : 470.0)];
 	bgImgView.image = [UIImage imageNamed:bgAsset];

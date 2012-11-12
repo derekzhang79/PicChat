@@ -155,7 +155,7 @@
 				$participant_obj = mysql_fetch_object(mysql_query($query));
 				$participant_id = $participant_obj->id;
 				$participant_name = $participant_obj->username;
-				$device_token = $participantr_obj->device_token;
+				$device_token = $participant_obj->device_token;
 				$isPush = ($participant_obj->notifications == "Y");
 				$status_id = 3;
 				
@@ -177,15 +177,17 @@
 				$status_id = 2;
 			}
 			
+			$push = '{"device_tokens": ["'. $device_token .'"], "type":"1", "aps": {"alert": "'. $creator_name .' has started a #'. $subject_name .' chat with you!", "sound": "push_01.caf"}}';
+			
 			if ($isPush) {
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_URL, 'https://go.urbanairship.com/api/push/');
 				curl_setopt($ch, CURLOPT_USERPWD, "luPaeCF1Ry-H2Slh0Pef1w:dSycB-EmRHKYLAz971k2PQ"); // dev
-				//curl_setopt($ch, CURLOPT_USERPWD, ":"); // live
+				//curl_setopt($ch, CURLOPT_USERPWD, "FfJLfQz7R4CoAx9sLG8fCw:20E-2r5pQu2ldjCkMPwVzQ"); // live
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, '{"device_tokens": ["'. $device_token .'"], "type":"2", "aps": {"alert": "'. $creator_name .' has started a #'. $subject_name .' chat with you!", "sound": "push_01.caf"}}');
+				curl_setopt($ch, CURLOPT_POSTFIELDS, '{"device_tokens": ["'. $device_token .'"], "type":"1", "aps": {"alert": "'. $creator_name .' has started a #'. $subject_name .' chat with you!", "sound": "push_01.caf"}}');
 			 	$res = curl_exec($ch);
 				$err_no = curl_errno($ch);
 				$err_msg = curl_error($ch);
@@ -234,7 +236,8 @@
 				"subject_id" => $subject_id, 
 				"subject_name" => $subject_name, 
 				"status_id" => $status_id, 					
-				"added" => $added
+				"added" => $added, 
+				"push" => $push
 			);
 			
 			$this->sendResponse(200, json_encode($chat_arr));
@@ -283,7 +286,7 @@
 			$participant_obj = mysql_fetch_object(mysql_query($query));
 			$participant_id = $participant_obj->id;
 			$participant_name = $participant_obj->username;
-			$device_token = $participantr_obj->device_token;
+			$device_token = $participant_obj->device_token;
 			$isPush = ($participant_obj->notifications == "Y");
 			$status_id = 3;
 				
@@ -291,11 +294,11 @@
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_URL, 'https://go.urbanairship.com/api/push/');
 				curl_setopt($ch, CURLOPT_USERPWD, "luPaeCF1Ry-H2Slh0Pef1w:dSycB-EmRHKYLAz971k2PQ"); // dev
-				//curl_setopt($ch, CURLOPT_USERPWD, ":"); // live
+				//curl_setopt($ch, CURLOPT_USERPWD, "FfJLfQz7R4CoAx9sLG8fCw:20E-2r5pQu2ldjCkMPwVzQ"); // live
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_POST, 1);
-				curl_setopt($ch, CURLOPT_POSTFIELDS, '{"device_tokens": ["'. $device_token .'"], "type":"2", "aps": {"alert": "'. $creator_name .' has started a #'. $subject_name .' chat with you!", "sound": "push_01.caf"}}');
+				curl_setopt($ch, CURLOPT_POSTFIELDS, '{"device_tokens": ["'. $device_token .'"], "type":"1", "aps": {"alert": "'. $creator_name .' has started a #'. $subject_name .' chat with you!", "sound": "push_01.caf"}}');
 			 	$res = curl_exec($ch);
 				$err_no = curl_errno($ch);
 				$err_msg = curl_error($ch);

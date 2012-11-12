@@ -167,14 +167,14 @@
 			$participant_id = $participant_obj->id;
 			$participant_name = $participant_obj->username;
 			$participant_fb = $participant_obj->fb_id;
-			$device_token = $participantr_obj->device_token;
+			$device_token = $participant_obj->device_token;
 			$isPush = ($participant_obj->notifications == "Y");
 			
 			if ($isPush) {
 				$ch = curl_init();
 				curl_setopt($ch, CURLOPT_URL, 'https://go.urbanairship.com/api/push/');
 				curl_setopt($ch, CURLOPT_USERPWD, "luPaeCF1Ry-H2Slh0Pef1w:dSycB-EmRHKYLAz971k2PQ"); // dev
-				//curl_setopt($ch, CURLOPT_USERPWD, ":"); // live
+				//curl_setopt($ch, CURLOPT_USERPWD, "FfJLfQz7R4CoAx9sLG8fCw:20E-2r5pQu2ldjCkMPwVzQ"); // live
 				curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
 				curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 				curl_setopt($ch, CURLOPT_POST, 1);

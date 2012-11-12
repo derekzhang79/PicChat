@@ -32,6 +32,7 @@
 
 - (id)initAsTopCell {
 	if ((self = [self init])) {
+		_bgImgView.frame = CGRectMake(0.0, 0.0, 320.0, 20.0);
 		_bgImgView.image = [UIImage imageNamed:@"headerTableRow.png"];
 	}
 	
@@ -40,7 +41,8 @@
 
 - (id)initAsBottomCell {
 	if ((self = [self init])) {
-		_bgImgView.image = [UIImage imageNamed:@"footerTableRow_nonActive.png"];
+		_bgImgView.frame = CGRectMake(0.0, 0.0, 320.0, 20.0);
+		_bgImgView.image = [UIImage imageNamed:@"genericTableFooter.png"];
 		
 		UIButton *supportButton = [UIButton buttonWithType:UIButtonTypeCustom];
 		supportButton.frame = CGRectMake(18.0, 8.0, 284.0, 39.0);
@@ -55,7 +57,7 @@
 
 - (id)initAsMidCell:(NSString *)caption {
 	if ((self = [self init])) {
-		_bgImgView.image = [UIImage imageNamed:@"commonTableRow_nonActive.png"];
+		_bgImgView.image = [UIImage imageNamed:@"blankRowBackground_nonActive.png"];
 		
 		UILabel *indexLabel = [[UILabel alloc] initWithFrame:CGRectMake(26.0, 26.0, 250.0, 16.0)];
 		indexLabel.font = [[PCAppDelegate helveticaNeueFontBold] fontWithSize:15];

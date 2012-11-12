@@ -58,6 +58,7 @@
 
 - (id)initWithChatID:(int)chatID {
 	if ((self = [self init])) {
+		_subjectName = @"";
 		_chatID = chatID;
 		_isFirstAppearance = YES;
 	}
@@ -121,12 +122,12 @@
 - (void)_presentCamera {
 	NSLog(@"_presentCamera[%d]", ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]));
 	
+	_photos = [NSMutableArray array];
 	if ([_subjectName isEqual:@""])
 		_subjectName = [PCAppDelegate rndDefaultSubject];
 	
 	if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeCamera]) {
 		[[NSNotificationCenter defaultCenter] postNotificationName:@"COMPOSE_SOURCE_CAMERA" object:nil];
-		_photos = [NSMutableArray array];
 		
 		_imagePicker = [[UIImagePickerController alloc] init];
 		_imagePicker.sourceType =  UIImagePickerControllerSourceTypeCamera;
@@ -146,27 +147,25 @@
 		}];
 		
 	} else if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypePhotoLibrary]) {
-		ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] initWithNibName:@"ELCAlbumPickerController" bundle:[NSBundle mainBundle]];
-		ELCImagePickerController *elcPicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
-		[albumController setParent:elcPicker];
-		[elcPicker setDelegate:self];
+//		ELCAlbumPickerController *albumController = [[ELCAlbumPickerController alloc] initWithNibName:@"ELCAlbumPickerController" bundle:[NSBundle mainBundle]];
+//		ELCImagePickerController *elcPicker = [[ELCImagePickerController alloc] initWithRootViewController:albumController];
+//		[albumController setParent:elcPicker];
+//		[elcPicker setDelegate:self];
+//		
+//		PCAppDelegate *app = (PCAppDelegate *)[[UIApplication sharedApplication] delegate];
+//		[self.navigationController pushViewController:elcPicker animated:NO];
+//		[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
 		
-		PCAppDelegate *app = (PCAppDelegate *)[[UIApplication sharedApplication] delegate];
-		[self.navigationController pushViewController:elcPicker animated:NO];
+		_imagePicker = [[UIImagePickerController alloc] init];
+		_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+		_imagePicker.delegate = self;
+		_imagePicker.allowsEditing = NO;
+		_imagePicker.navigationBarHidden = YES;
+		_imagePicker.toolbarHidden = YES;
+		_imagePicker.wantsFullScreenLayout = NO;
+		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
 		
-		//[app.tabBarController presentViewController:elcPicker animated:NO completion:nil];
-
-		
-//		_imagePicker = [[UIImagePickerController alloc] init];
-//		_imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
-//		_imagePicker.delegate = self;
-//		_imagePicker.allowsEditing = NO;
-//		_imagePicker.navigationBarHidden = YES;
-//		_imagePicker.toolbarHidden = YES;
-//		_imagePicker.wantsFullScreenLayout = NO;
-//		_imagePicker.navigationBar.barStyle = UIBarStyleDefault;
-		
-//		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
+		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
 	}
 }
 
@@ -236,6 +235,9 @@
 			
 			_isFirstAppearance = YES;
 			_subjectName = _cameraOverlayView.subjectName;
+			
+			if ([_subjectName isEqual:@""])
+				_subjectName = [PCAppDelegate rndDefaultSubject];
 			
 			if ([_subjectName hasPrefix:@"#"])
 				_subjectName = [_subjectName substringFromIndex:1];
