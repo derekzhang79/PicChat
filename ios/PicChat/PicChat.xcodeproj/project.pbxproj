@@ -71,6 +71,10 @@
 		4C06F51116505A9B00E7E906 /* firstUserExperience_Background-568h.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C06F51016505A9B00E7E906 /* firstUserExperience_Background-568h.png */; };
 		4C06F51316505B8F00E7E906 /* icon_57x57.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C06F51216505B8E00E7E906 /* icon_57x57.png */; };
 		4C1912751649AB1800A11555 /* PCAppRootViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4C1912741649AB1800A11555 /* PCAppRootViewController.m */; };
+		4C2C58B81655E82100B77D7D /* avatarBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C58B61655E82100B77D7D /* avatarBackground.png */; };
+		4C2C58B91655E82100B77D7D /* avatarBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C58B71655E82100B77D7D /* avatarBackground@2x.png */; };
+		4C2C58BD1655E95300B77D7D /* chatAnimationBackground.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C58BB1655E95300B77D7D /* chatAnimationBackground.png */; };
+		4C2C58BE1655E95300B77D7D /* chatAnimationBackground@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 4C2C58BC1655E95300B77D7D /* chatAnimationBackground@2x.png */; };
 		4CA258DD163DB7ED004A5423 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CA163DB7ED004A5423 /* Accounts.framework */; };
 		4CA258DE163DB7ED004A5423 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CB163DB7ED004A5423 /* AdSupport.framework */; };
 		4CA258DF163DB7ED004A5423 /* AssetsLibrary.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4CA258CC163DB7ED004A5423 /* AssetsLibrary.framework */; };
@@ -284,6 +288,10 @@
 		4C06F51216505B8E00E7E906 /* icon_57x57.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = icon_57x57.png; sourceTree = "<group>"; };
 		4C1912731649AB1800A11555 /* PCAppRootViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PCAppRootViewController.h; sourceTree = "<group>"; };
 		4C1912741649AB1800A11555 /* PCAppRootViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PCAppRootViewController.m; sourceTree = "<group>"; };
+		4C2C58B61655E82100B77D7D /* avatarBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = avatarBackground.png; sourceTree = "<group>"; };
+		4C2C58B71655E82100B77D7D /* avatarBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "avatarBackground@2x.png"; sourceTree = "<group>"; };
+		4C2C58BB1655E95300B77D7D /* chatAnimationBackground.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = chatAnimationBackground.png; sourceTree = "<group>"; };
+		4C2C58BC1655E95300B77D7D /* chatAnimationBackground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "chatAnimationBackground@2x.png"; sourceTree = "<group>"; };
 		4CA258CA163DB7ED004A5423 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		4CA258CB163DB7ED004A5423 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
 		4CA258CC163DB7ED004A5423 /* AssetsLibrary.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AssetsLibrary.framework; path = System/Library/Frameworks/AssetsLibrary.framework; sourceTree = SDKROOT; };
@@ -651,6 +659,10 @@
 		4C06F4C71650566D00E7E906 /* Chats */ = {
 			isa = PBXGroup;
 			children = (
+				4C2C58BB1655E95300B77D7D /* chatAnimationBackground.png */,
+				4C2C58BC1655E95300B77D7D /* chatAnimationBackground@2x.png */,
+				4C2C58B61655E82100B77D7D /* avatarBackground.png */,
+				4C2C58B71655E82100B77D7D /* avatarBackground@2x.png */,
 				4C06F4C81650567500E7E906 /* cameraBackButton_Active.png */,
 				4C06F4C91650567500E7E906 /* cameraBackButton_Active@2x.png */,
 				4C06F4CA1650567500E7E906 /* cameraBackButton_nonActive.png */,
@@ -1572,6 +1584,10 @@
 				4C06F50F16505A6D00E7E906 /* blankRowBackground_nonActive@2x.png in Resources */,
 				4C06F51116505A9B00E7E906 /* firstUserExperience_Background-568h.png in Resources */,
 				4C06F51316505B8F00E7E906 /* icon_57x57.png in Resources */,
+				4C2C58B81655E82100B77D7D /* avatarBackground.png in Resources */,
+				4C2C58B91655E82100B77D7D /* avatarBackground@2x.png in Resources */,
+				4C2C58BD1655E95300B77D7D /* chatAnimationBackground.png in Resources */,
+				4C2C58BE1655E95300B77D7D /* chatAnimationBackground@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

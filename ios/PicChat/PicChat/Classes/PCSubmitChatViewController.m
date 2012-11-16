@@ -21,6 +21,7 @@
 #import "PCHeaderView.h"
 #import "PCChatVO.h"
 #import "PCHistoryViewController.h"
+#import "PCChatViewController.h"
 
 @interface PCSubmitChatViewController () <UITextFieldDelegate, FBFriendPickerDelegate>
 @property (nonatomic, strong) UIImageView *photoImgView;
@@ -116,13 +117,13 @@
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	backButton.frame = CGRectMake(5.0, 0.0, 74.0, 44.0);
+	backButton.frame = CGRectMake(0.0, 0.0, 74.0, 44.0);
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
 	[backButton addTarget:self action:@selector(_goBack) forControlEvents:UIControlEventTouchUpInside];
 	[headerView addSubview:backButton];
 	
-	UIView *holderView = [[UIView alloc] initWithFrame:CGRectMake(7.0, 55.0, 306.0, 306.0)];
+	UIView *holderView = [[UIView alloc] initWithFrame:CGRectMake(7.0, 54.0, 306.0, 306.0)];
 	holderView.clipsToBounds = YES;
 	[self.view addSubview:holderView];
 	
@@ -131,12 +132,17 @@
 	[holderView addSubview:_photoImgView];
 	
 	if ([_photos count] > 1)
-		_photoTimer = [NSTimer scheduledTimerWithTimeInterval:0.33 target:self selector:@selector(_nextPhoto) userInfo:nil repeats:YES];
+		_photoTimer = [NSTimer scheduledTimerWithTimeInterval:0.125 target:self selector:@selector(_nextPhoto) userInfo:nil repeats:YES];
 	
 	_recipientImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 55.0, 50.0, 50.0)];
 	
-	if (![_fbID isEqual:@""])
-		[_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _fbID]] placeholderImage:nil];
+	if (![_fbID isEqual:@""]) {
+		//[_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbID]] placeholderImage:nil];
+        [_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbID]] placeholderImage:nil options:0 success:^(UIImage *image, BOOL cached) {
+            _recipientImgView.image = [PCAppDelegate cropImage:image toRect:CGRectMake(0.0, 0.0, 108.0, 108.0)];
+        } failure:nil];
+        
+    }
 	[self.view addSubview:_recipientImgView];
 	
 	_subjectTextField = [[UITextField alloc] initWithFrame:CGRectMake(20.0, 110.0, 240.0, 20.0)];
@@ -151,19 +157,21 @@
 	_subjectTextField.keyboardType = UIKeyboardTypeDefault;
 	_subjectTextField.text = [NSString stringWithFormat:@"#%@", _subjectName];
 	_subjectTextField.delegate = self;
-	[self.view addSubview:_subjectTextField];
+	//[self.view addSubview:_subjectTextField];
 	
 	_editButton = [UIButton buttonWithType:UIButtonTypeCustom];
 	_editButton.frame = CGRectMake(265.0, 55.0, 34.0, 34.0);
 	[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_nonActive.png"] forState:UIControlStateNormal];
 	[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_Active.png"] forState:UIControlStateHighlighted];
 	[_editButton addTarget:self action:@selector(_goEditSubject) forControlEvents:UIControlEventTouchUpInside];
-	[self.view addSubview:_editButton];
+	//[self.view addSubview:_editButton];
 	
 	NSLog(@"CHAT ID:[%d][%@]", [PCAppDelegate chatID], _fbID);
 	
+	int offset = ([PCAppDelegate isRetina5]) ? 18.0 : -15.0;
+	
 	UIButton *friendButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	friendButton.frame = CGRectMake(0.0, 278.0, 320.0, 64.0);
+	friendButton.frame = CGRectMake(0.0, 351.0 + offset, 320.0, 64.0);
 	[friendButton setBackgroundImage:[UIImage imageNamed:@"selectFacebookFriendButton_nonActive.png"] forState:UIControlStateNormal];
 	[friendButton setBackgroundImage:[UIImage imageNamed:@"selectFacebookFriendButton_Active.png"] forState:UIControlStateHighlighted];
 	[friendButton addTarget:self action:@selector(_goSelectFriend) forControlEvents:UIControlEventTouchUpInside];
@@ -171,7 +179,7 @@
 	[self.view addSubview:friendButton];
 	
 	UIButton *randomButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	randomButton.frame = CGRectMake(0.0, 338.0, 320.0, 64.0);
+	randomButton.frame = CGRectMake(0.0, 411.0 + offset, 320.0, 64.0);
 	[randomButton setBackgroundImage:[UIImage imageNamed:@"selectRandomFriendButton_nonActive.png"] forState:UIControlStateNormal];
 	[randomButton setBackgroundImage:[UIImage imageNamed:@"selectRandomFriendButton_Active.png"] forState:UIControlStateHighlighted];
 	[randomButton addTarget:self action:@selector(_goRandomChat) forControlEvents:UIControlEventTouchUpInside];
@@ -201,6 +209,11 @@
 	_photoTimer = nil;
 	
 	[self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)_goEditSubject {
+    _subjectTextField.text = @"#";
+    [_subjectTextField becomeFirstResponder];
 }
 
 
@@ -278,12 +291,14 @@
 			
 			NSError *error = nil;
 			NSDictionary *chatResult = [NSJSONSerialization JSONObjectWithData:responseObject options:0 error:&error];
+			PCChatVO *vo;
 			
 			if (error != nil)
 				NSLog(@"Failed to parse job list JSON: %@", [error localizedFailureReason]);
 			
 			else {
 				NSLog(@"RESULT: %@", chatResult);
+				vo = [PCChatVO chatWithDictionary:chatResult];
 			}
 			
 			[_progressHUD hide:YES];
@@ -291,9 +306,12 @@
 			
 			//[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
 			[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
-				UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
+				PCHistoryViewController *historyViewController = [[PCHistoryViewController alloc] init];
+				UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:historyViewController];
 				[navigationController setNavigationBarHidden:YES];
-				[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+				[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:^(void){
+					[historyViewController.navigationController pushViewController:[[PCChatViewController alloc] initWithChatVO:vo] animated:YES];
+				}];
 			}];
 			
 		} failure:^(AFHTTPRequestOperation *operation, NSError *error) {
@@ -349,7 +367,11 @@
 			 // submit
 			 _fbID = [[friendPickerController.selection lastObject] objectForKey:@"id"];
 			 _fbName = [[friendPickerController.selection lastObject] objectForKey:@"first_name"];
-			 [_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _fbID]] placeholderImage:nil];
+			 //[_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbID]] placeholderImage:nil];
+			 [_recipientImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _fbID]] placeholderImage:nil options:0 success:^(UIImage *image, BOOL cached) {
+				 _recipientImgView.image = [PCAppDelegate cropImage:image toRect:CGRectMake(0.0, 0.0, 108.0, 108.0)];
+			 } failure:nil];
+			 
 			 //NSLog(@"FRIEND:[%@]", [friendPickerController.selection lastObject]);
 			 
 			 [self _goSubmitChat];

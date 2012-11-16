@@ -105,8 +105,13 @@
 - (void)setChatVO:(PCChatVO *)chatVO {
 	_chatVO = chatVO;
 	
-	[_participantImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _chatVO.participantFB]] placeholderImage:nil];
-	_participantLabel.text = [NSString stringWithFormat:@"#%@ with %@", _chatVO.subjectName, _chatVO.participantName];
+	//[_participantImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", _chatVO.participantFB]] placeholderImage:nil];
+    [_participantImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=large", ([[[PCAppDelegate infoForUser] objectForKey:@"id"] intValue] == _chatVO.participantID) ? _chatVO.creatorFB : _chatVO.participantFB]] placeholderImage:nil options:0 success:^(UIImage *image, BOOL cached) {
+        _participantImgView.image = [PCAppDelegate cropImage:image toRect:CGRectMake(0.0, 0.0, 108.0, 108.0)];
+    } failure:nil];
+	
+	_participantLabel.text = [NSString stringWithFormat:@"#%@ with %@", _chatVO.subjectName, ([[[PCAppDelegate infoForUser] objectForKey:@"id"] intValue] == _chatVO.participantID) ? _chatVO.creatorName : _chatVO.participantName];
+	//_participantLabel.text = [NSString stringWithFormat:@"#%@ with %@", _chatVO.subjectName, _chatVO.participantName];
 }
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {

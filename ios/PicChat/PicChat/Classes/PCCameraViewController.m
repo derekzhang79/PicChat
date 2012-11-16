@@ -267,9 +267,17 @@
 		[self _showOverlay];
 		
 	} else {
-		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
-		[self.navigationController dismissViewControllerAnimated:YES completion:nil];
-		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+//		[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
+//		[self.navigationController dismissViewControllerAnimated:YES completion:nil];
+//		[[[UIApplication sharedApplication] delegate].window.rootViewController dismissViewControllerAnimated:YES completion:nil];
+		
+		[_imagePicker dismissViewControllerAnimated:NO completion:^(void) {
+			[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
+				UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
+				[navigationController setNavigationBarHidden:YES];
+				[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
+			}];
+		}];
 	}
 }
 

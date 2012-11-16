@@ -15,8 +15,10 @@
 @property (nonatomic, strong) UIImageView *loadImgView;
 @property (nonatomic, strong) UIImageView *imgView;
 @property (nonatomic, strong) NSMutableArray *images;
+@property (nonatomic, strong) UIImageView *imageHolderImgView;
 @property (nonatomic) int imageCounter;
-@property (nonatomic, strong) UIImageView *authorImgView;
+@property (nonatomic, strong) UIImageView *authorHolderImgView;
+@property (nonatomic) BOOL isUser;
 @end
 
 @implementation PCChatEntryViewCell
@@ -32,13 +34,23 @@
 	if ((self = [super init])) {
 		_images = [NSMutableArray array];
 		_imageCounter = 0;
+		_isUser = YES;
 		
-		_authorImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 10.0, 54.0, 54.0)];
-		[self addSubview:_authorImgView];
+		_authorHolderImgView = [[UIImageView alloc] initWithFrame:CGRectMake(7.0, 7.0, 64.0, 64.0)];
+		_authorHolderImgView.image = [UIImage imageNamed:@"avatarBackground.png"];
+		[self addSubview:_authorHolderImgView];
+		
+		_imageHolderImgView = [[UIImageView alloc] initWithFrame:CGRectMake(75.0, 7.0, 240.0, 270.0)];
+		_imageHolderImgView.image = [UIImage imageNamed:@"chatAnimationBackground.png"];
+		[self addSubview:_imageHolderImgView];
+		
+		UIView *imgHolderView = [[UIView alloc] initWithFrame:CGRectMake(30.0, 30.0, 180.0, 210.0)];
+		imgHolderView.clipsToBounds = YES;
+		[_imageHolderImgView addSubview:imgHolderView];
 		
 		_loadImgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 150.0, 200.0)];
-		_imgView = [[UIImageView alloc] initWithFrame:CGRectMake(70.0, 1.0, 150.0, 200.0)];
-		[self addSubview:_imgView];
+		_imgView = [[UIImageView alloc] initWithFrame:CGRectMake(0.0, 0.0, 180.0, 240.0)];
+		[imgHolderView addSubview:_imgView];
 	}
 	
 	return (self);
@@ -51,7 +63,15 @@
 - (void)setEntryVO:(PCChatEntryVO *)entryVO {
 	_entryVO = entryVO;
 	
-	[_authorImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _entryVO.authorFB]] placeholderImage:nil];
+	_isUser = (entryVO.authorID == [[[PCAppDelegate infoForUser] objectForKey:@"id"] intValue]);
+	_authorHolderImgView.frame = CGRectOffset(_authorHolderImgView.frame, _isUser * 242.0, 0.0);
+	_imageHolderImgView.frame = CGRectOffset(_imageHolderImgView.frame, _isUser * -70.0, 0.0);
+	
+	UIImageView *authorImgView = [[UIImageView alloc] initWithFrame:CGRectMake(10.0, 10.0, 44.0, 44.0)];
+	[authorImgView setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://graph.facebook.com/%@/picture?type=square", _entryVO.authorFB]] placeholderImage:nil options:0 success:^(UIImage *image, BOOL cached) {
+        authorImgView.image = [PCAppDelegate cropImage:image toRect:CGRectMake(0.0, 0.0, 108.0, 108.0)];
+    } failure:nil];
+	[_authorHolderImgView addSubview:authorImgView];
 	
 //	__weak id weakSelf = self;
 //	

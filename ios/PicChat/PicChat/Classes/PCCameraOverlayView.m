@@ -64,7 +64,7 @@
 		[self addSubview:_subjectTextField];
 		
 		_editButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		_editButton.frame = CGRectMake(265.0, 55.0, 34.0, 34.0);
+		_editButton.frame = CGRectMake(275.0, 68.0, 34.0, 34.0);
 		[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_nonActive.png"] forState:UIControlStateNormal];
 		[_editButton setBackgroundImage:[UIImage imageNamed:@"xCloseButton_Active.png"] forState:UIControlStateHighlighted];
 		[_editButton addTarget:self action:@selector(_goEditSubject) forControlEvents:UIControlEventTouchUpInside];
@@ -76,27 +76,27 @@
 		[self addSubview:footerImgView];
 		
 		UIButton *leftButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		leftButton.frame = CGRectMake(0.0, ([PCAppDelegate chatID] == 0) ? 20.0 : 27.0, 64.0, ([PCAppDelegate chatID] == 0) ? 64.0 : 49.0);
+		leftButton.frame = CGRectMake(10.0, ([PCAppDelegate chatID] == 0) ? 17.0 : 24.0, 64.0, ([PCAppDelegate chatID] == 0) ? 64.0 : 49.0);
 		[leftButton setBackgroundImage:[UIImage imageNamed:([PCAppDelegate chatID] == 0) ? @"chatButton_nonActive.png" : @"closeButton_nonActive.png"] forState:UIControlStateNormal];
 		[leftButton setBackgroundImage:[UIImage imageNamed:([PCAppDelegate chatID] == 0) ? @"chatButton_Active.png" : @"closeButton_Active.png"] forState:UIControlStateHighlighted];
 		[leftButton addTarget:self action:@selector(_goLeft) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:leftButton];
 		
 		UIButton *midButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		midButton.frame = CGRectMake(113.0, 0.0, 94.0, 94.0);
+		midButton.frame = CGRectMake(113.0, 3.0, 94.0, 94.0);
 		[midButton setBackgroundImage:[UIImage imageNamed:@"cameraAPlayButton_nonActive.png"] forState:UIControlStateNormal];
 		[midButton setBackgroundImage:[UIImage imageNamed:@"cameraAPlayButton_Active.png"] forState:UIControlStateHighlighted];
 		[midButton addTarget:self action:@selector(_goTakePhoto) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:midButton];
 		
 		UIButton *rightButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		rightButton.frame = CGRectMake(225.0, 20.0, 94.0, 64.0);
+		rightButton.frame = CGRectMake(215.0, 17.0, 94.0, 64.0);
 		[rightButton setBackgroundImage:[UIImage imageNamed:@"inviteFriends_nonActive.png"] forState:UIControlStateNormal];
 		[rightButton setBackgroundImage:[UIImage imageNamed:@"inviteFriends_Active.png"] forState:UIControlStateHighlighted];
 		[rightButton addTarget:self action:@selector(_goRight) forControlEvents:UIControlEventTouchUpInside];
 		[footerImgView addSubview:rightButton];
 		
-		_countLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, 150.0, 320.0, 72.0)];
+		_countLabel = [[UILabel alloc] initWithFrame:CGRectMake(0.0, (self.frame.size.height * 0.5) - 36.0, 320.0, 72.0)];
 		_countLabel.backgroundColor = [UIColor clearColor];
 		_countLabel.font = [[PCAppDelegate helveticaNeueFontBold] fontWithSize:72.0];
 		_countLabel.textColor = [UIColor whiteColor];
@@ -154,6 +154,11 @@
 
 - (void)_goRight {
 	[_delegate cameraOverlayViewRightTabTapped:self];
+}
+
+- (void)_goEditSubject {
+    _subjectTextField.text = @"#";
+    [_subjectTextField becomeFirstResponder];
 }
 
 
