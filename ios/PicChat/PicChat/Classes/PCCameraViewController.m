@@ -18,6 +18,7 @@
 #import "PCHistoryViewController.h"
 #import "PCPeopleViewController.h"
 #import "PCSettingsViewController.h"
+#import "PCLoginViewController.h"
 #import "PCFacebookCaller.h"
 
 #import "ELCAlbumPickerController.h"
@@ -380,6 +381,7 @@
 		[self.navigationController dismissViewControllerAnimated:NO completion:^(void) {
 			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCHistoryViewController alloc] init]];
 			[navigationController setNavigationBarHidden:YES];
+			[[UIApplication sharedApplication] setStatusBarHidden:NO withAnimation:UIStatusBarAnimationNone];
 			[[PCAppDelegate rootViewController] presentViewController:navigationController animated:NO completion:nil];
 		}];
 	}];
@@ -399,21 +401,28 @@
 //		}];
 //	}];
 	
-	NSRange range;
-	range.length = 50;
-	range.location = _blockCounter * range.length;
-	
-	if (range.location + range.length > [[PCAppDelegate fbFriends] count])
-		range.length = [[PCAppDelegate fbFriends] count] - range.location;
-	
-	if (range.location > [[PCAppDelegate fbFriends] count]) {
-		range.location = 0;
-		range.length = [[PCAppDelegate fbFriends] count];
+	if (FBSession.activeSession.state != 513) {
+		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+		[navigationController setNavigationBarHidden:YES];
+		[self presentViewController:navigationController animated:YES completion:nil];
+		
+	} else {
+		NSRange range;
+		range.length = 50;
+		range.location = _blockCounter * range.length;
+		
+		if (range.location + range.length > [[PCAppDelegate fbFriends] count])
+			range.length = [[PCAppDelegate fbFriends] count] - range.location;
+		
+		if (range.location > [[PCAppDelegate fbFriends] count]) {
+			range.location = 0;
+			range.length = [[PCAppDelegate fbFriends] count];
+		}
+		
+		NSLog(@"INVITING (%d-%d)/%d", range.location, range.location + range.length, [[PCAppDelegate fbFriends] count]);
+		[PCFacebookCaller sendAppRequestBroadcastWithIDs:[[PCAppDelegate fbFriends] subarrayWithRange:range]];
+		_blockCounter++;
 	}
-	
-	NSLog(@"INVITING (%d-%d)/%d", range.location, range.location + range.length, [[PCAppDelegate fbFriends] count]);
-	[PCFacebookCaller sendAppRequestBroadcastWithIDs:[[PCAppDelegate fbFriends] subarrayWithRange:range]];
-	_blockCounter++;
 }
 
 - (void)cameraOverlayViewShowOptions:(PCCameraOverlayView *)cameraOverlayView {

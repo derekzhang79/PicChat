@@ -51,7 +51,7 @@
 	[self.view addSubview:footerImgView];
 	
 	UIButton *facebookButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	facebookButton.frame = CGRectMake(12.0, 10.0, 296.0, 49.0);
+	facebookButton.frame = CGRectMake(0.0, 3.0, 320.0, 64.0);
 	[facebookButton setBackgroundImage:[UIImage imageNamed:@"loginFacebook_nonActive.png"] forState:UIControlStateNormal];
 	[facebookButton setBackgroundImage:[UIImage imageNamed:@"loginFacebook_Active.png"] forState:UIControlStateHighlighted];
 	[facebookButton addTarget:self action:@selector(_goFacebook) forControlEvents:UIControlEventTouchUpInside];

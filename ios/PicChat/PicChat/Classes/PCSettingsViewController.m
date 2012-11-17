@@ -72,7 +72,7 @@
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	backButton.frame = CGRectMake(0.0, 0.0, 74.0, 44.0);
+	backButton.frame = CGRectMake(3.0, 5.0, 64.0, 34.0);
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
 	[backButton addTarget:self action:@selector(_goBack) forControlEvents:UIControlEventTouchUpInside];

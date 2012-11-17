@@ -33,10 +33,10 @@
 	}
 }
 
-+ (void)postToActivity:(PCChatVO *)vo withAction:(NSString *)action {
++ (void)postToActivity:(PCChatEntryVO *)vo withAction:(NSString *)action {
 	if ([PCAppDelegate allowsFBPosting]) {
 		NSMutableDictionary *params = [NSMutableDictionary new];
-		[params setObject:[NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.chatID] forKey:@"challenge"];
+		[params setObject:[NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.entryID] forKey:@"challenge"];
 		//[params setObject:[NSString stringWithFormat:@"%@_l.jpg", vo.imageURL] forKey:@"image[0][url]"];
 		
 		[FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"me/pchallenge:%@", action] parameters:params HTTPMethod:@"POST" completionHandler:^(FBRequestConnection *connection, id result, NSError *error) {
@@ -53,14 +53,14 @@
 	}
 }
 
-+ (void)postToTimeline:(PCChatVO *)vo {
++ (void)postToTimeline:(PCChatEntryVO *)vo {
 	if ([PCAppDelegate allowsFBPosting]) {
 		NSMutableDictionary *postParams = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-													  [NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.chatID], @"link",
-//													  [NSString stringWithFormat:@"%@_l.jpg", vo.imageURL], @"picture",
-													  vo.subjectName, @"name",
-													  vo.subjectName, @"caption",
-													  vo.creatorName, @"description", nil];
+													  [NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.entryID], @"link",
+													  [NSString stringWithFormat:@"%@_l.jpg", [vo.images objectAtIndex:0]], @"picture",
+													  vo.authorName, @"name",
+													  @"", @"caption",
+													  vo.participantName, @"description", nil];
 		
 		[FBRequestConnection startWithGraphPath:@"me/feed" parameters:postParams HTTPMethod:@"POST" completionHandler:
 		 ^(FBRequestConnection *connection, id result, NSError *error) {
@@ -78,14 +78,14 @@
 	}
 }
 
-+ (void)postToFriendTimeline:(NSString *)fbID chat:(PCChatVO *)vo {
++ (void)postToFriendTimeline:(NSString *)fbID chat:(PCChatEntryVO *)vo {
 	if ([PCAppDelegate allowsFBPosting]) {
 		NSMutableDictionary *postParams = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-													  [NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.chatID], @"link",
-//													  [NSString stringWithFormat:@"%@_l.jpg", vo.imageURL], @"picture",
-													  vo.subjectName, @"name",
-													  vo.subjectName, @"caption",
-													  vo.creatorName, @"description", nil];
+													  [NSString stringWithFormat:@"%@?cID=%d", [PCAppDelegate facebookCanvasURL], vo.entryID], @"link",
+													  [NSString stringWithFormat:@"%@_l.jpg", [vo.images objectAtIndex:0]], @"picture",
+													  vo.authorName, @"name",
+													  @"", @"caption",
+													  vo.participantName, @"description", nil];
 		
 		[FBRequestConnection startWithGraphPath:[NSString stringWithFormat:@"%@/feed", fbID] parameters:postParams HTTPMethod:@"POST" completionHandler:
 		 ^(FBRequestConnection *connection, id result, NSError *error) {

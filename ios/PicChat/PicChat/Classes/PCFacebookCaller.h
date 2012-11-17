@@ -10,17 +10,18 @@
 #import "Facebook.h"
 
 #import "PCChatVO.h"
+#import "PCChatEntryVO.h"
 
 @interface PCFacebookCaller : NSObject
 @property (strong, nonatomic) Facebook *facebook;
 
 
 + (NSArray *)friendIDsFromUser:(NSString *)fbID;
-+ (void)postToActivity:(PCChatVO *)vo withAction:(NSString *)action;
++ (void)postToActivity:(PCChatEntryVO *)vo withAction:(NSString *)action;
 + (void)postStatus:(NSString *)msg;
-+ (void)postToTimeline:(PCChatVO *)vo;
++ (void)postToTimeline:(PCChatEntryVO *)vo;
 + (void)postToTicker:(NSString *)msg;
-+ (void)postToFriendTimeline:(NSString *)fbID chat:(PCChatVO *)vo;
++ (void)postToFriendTimeline:(NSString *)fbID chat:(PCChatEntryVO *)vo;
 + (void)postMessageToFriendTimeline:(NSString *)fbID message:(NSString *)msg;
 + (void)sendAppRequestToUser:(NSString *)fbID;
 + (void)sendAppRequestBroadcast;

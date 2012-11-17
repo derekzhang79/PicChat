@@ -47,7 +47,7 @@
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	backButton.frame = CGRectMake(5.0, 5.0, 64.0, 34.0);
+	backButton.frame = CGRectMake(3.0, 5.0, 64.0, 34.0);
 	[backButton setBackgroundImage:[UIImage imageNamed:@"cameraBackButton_nonActive.png"] forState:UIControlStateNormal];
 	[backButton setBackgroundImage:[UIImage imageNamed:@"cameraBackButton_Active.png"] forState:UIControlStateHighlighted];
 	[backButton addTarget:self action:@selector(_goCamera) forControlEvents:UIControlEventTouchUpInside];
@@ -59,7 +59,7 @@
 	[headerView addSubview:activityIndicatorView];
 	
 	_refreshButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	_refreshButton.frame = CGRectMake(275.0, 5.0, 44.0, 34.0);
+	_refreshButton.frame = CGRectMake(274.0, 5.0, 44.0, 34.0);
 	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_nonActive.png"] forState:UIControlStateNormal];
 	[_refreshButton setBackgroundImage:[UIImage imageNamed:@"refreshButton_Active.png"] forState:UIControlStateHighlighted];
 	[_refreshButton addTarget:self action:@selector(_goRefresh) forControlEvents:UIControlEventTouchUpInside];

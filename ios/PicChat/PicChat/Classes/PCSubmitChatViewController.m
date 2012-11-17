@@ -22,6 +22,8 @@
 #import "PCChatVO.h"
 #import "PCHistoryViewController.h"
 #import "PCChatViewController.h"
+#import "PCLoginViewController.h"
+#import "PCFacebookCaller.h"
 
 @interface PCSubmitChatViewController () <UITextFieldDelegate, FBFriendPickerDelegate>
 @property (nonatomic, strong) UIImageView *photoImgView;
@@ -117,7 +119,7 @@
 	[self.view addSubview:headerView];
 	
 	UIButton *backButton = [UIButton buttonWithType:UIButtonTypeCustom];
-	backButton.frame = CGRectMake(0.0, 0.0, 74.0, 44.0);
+	backButton.frame = CGRectMake(3.0, 5.0, 64.0, 34.0);
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_nonActive.png"] forState:UIControlStateNormal];
 	[backButton setBackgroundImage:[UIImage imageNamed:@"backButton_Active.png"] forState:UIControlStateHighlighted];
 	[backButton addTarget:self action:@selector(_goBack) forControlEvents:UIControlEventTouchUpInside];
@@ -185,6 +187,13 @@
 	[randomButton addTarget:self action:@selector(_goRandomChat) forControlEvents:UIControlEventTouchUpInside];
 	randomButton.hidden = ([PCAppDelegate chatID] != 0);
 	[self.view addSubview:randomButton];
+	
+	if (FBSession.activeSession.state != 513) {
+		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+		[navigationController setNavigationBarHidden:YES];
+		[self presentViewController:navigationController animated:YES completion:nil];
+		
+	}
 }
 
 - (void)viewDidLoad {
@@ -471,6 +480,12 @@
 			
 			else {
 				NSLog(@"RESULT: %@", chatResult);
+				
+				if ([PCAppDelegate chatID] == 0) {
+					[PCFacebookCaller postToTimeline:[PCChatEntryVO entryWithDictionary:chatResult]];
+				} else {
+					[PCFacebookCaller postToTimeline:[PCChatEntryVO entryWithDictionary:chatResult]];
+				}
 			}
 			
 			[_progressHUD hide:YES];

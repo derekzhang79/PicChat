@@ -25,11 +25,11 @@
 
 - (id)initWithFrame:(CGRect)frame {
 	if ((self = [super initWithFrame:frame])) {
-		UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 0.0, frame.size.width, 192.0)];
+		UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.0, 5.0, frame.size.width, 192.0)];
 		[self addSubview:headerView];
 		
 		UIButton *flashButton = [UIButton buttonWithType:UIButtonTypeCustom];
-		flashButton.frame = CGRectMake(10.0, 0.0, 84.0, 44.0);
+		flashButton.frame = CGRectMake(7.0, 0.0, 84.0, 44.0);
 		[flashButton setBackgroundImage:[UIImage imageNamed:@"cameraRollButton_nonActive.png"] forState:UIControlStateNormal];
 		[flashButton setBackgroundImage:[UIImage imageNamed:@"cameraRollButton_Active.png"] forState:UIControlStateHighlighted];
 		[flashButton addTarget:self action:@selector(_goFlashToggle) forControlEvents:UIControlEventTouchUpInside];
