@@ -61,7 +61,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 	NSArray *subjects = [[NSUserDefaults standardUserDefaults] objectForKey:@"default_subjects"];
 	return ([subjects objectAtIndex:(arc4random() % [subjects count])]);
 }
-
+ 
 
 + (BOOL)isRetina5 {
 	return ([UIScreen mainScreen].scale == 2.f && [UIScreen mainScreen].bounds.size.height == 568.0f);
@@ -271,7 +271,7 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 					[friends addObject: [friend objectForKey:@"id"]];
 				}
 				
-				NSLog(@"RETRIEVED FRIENDS");
+				NSLog(@"--RETRIEVED FRIENDS--");
 				[PCAppDelegate storeFBFriends:friends];
 			}];
 		}
@@ -326,9 +326,21 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 }
 
 
+- (void)_proceedToCamera:(NSNotification *)notification {
+	NSLog(@"--PROCEED TO CAMERA---");
+	UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+	[navigationController setNavigationBarHidden:YES];
+	[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+}
+
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 	if ([PCAppDelegate hasNetwork] && [PCAppDelegate canPingParseServer]) {
+		[[NSUserDefaults standardUserDefaults] setObject:@"YES" forKey:@"first_login"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(_proceedToCamera:) name:@"PROCEED_TO_CAMERA" object:nil];
+		
 		NSMutableDictionary *takeOffOptions = [[NSMutableDictionary alloc] init];
 		[takeOffOptions setValue:launchOptions forKey:UAirshipTakeOffOptionsLaunchOptionsKey];
 		[UAirship takeOff:takeOffOptions];
@@ -418,36 +430,23 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 		
 		self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
 		self.window.backgroundColor = [UIColor whiteColor];
-		
-
-//		UIViewController *historyViewController, *appRootViewController, *peopleViewController;
-//		historyViewController = [[PCHistoryViewController alloc] init];
-//		appRootViewController = [[PCAppRootViewController alloc] init];
-//		peopleViewController = [[PCPeopleViewController alloc] init];
-//		
-//		UINavigationController *navController1 = [[UINavigationController alloc] initWithRootViewController:historyViewController];
-//		UINavigationController *navController2 = [[UINavigationController alloc] initWithRootViewController:appRootViewController];
-//		UINavigationController *navController3 = [[UINavigationController alloc] initWithRootViewController:peopleViewController];
-//		
-//		[navController1 setNavigationBarHidden:YES];
-//		[navController2 setNavigationBarHidden:YES];
-//		[navController3 setNavigationBarHidden:YES];
-//		
-//		self.tabBarController = [[PCTabBarController alloc] init];
-//		self.tabBarController.delegate = self;
-//		self.tabBarController.viewControllers = [NSArray arrayWithObjects:navController1, navController2, navController3, nil];
-		
 		self.window.rootViewController = [[PCAppRootViewController alloc] init];
 		[self.window makeKeyAndVisible];
 		
-		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
-		[navigationController setNavigationBarHidden:YES];
-		[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
-		
 		if (![self openSession]) {
-			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+			self.loginViewController = [[PCLoginViewController alloc] init];
+			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:self.loginViewController];
 			[navigationController setNavigationBarHidden:YES];
 			[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+		
+		} else {
+			[[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"first_login"];
+			[[NSUserDefaults standardUserDefaults] synchronize];
+			
+			UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCCameraViewController alloc] init]];
+			[navigationController setNavigationBarHidden:YES];
+			[self.window.rootViewController presentViewController:navigationController animated:NO completion:nil];
+
 		}
 	}
 	
@@ -478,6 +477,12 @@ NSString *const SCSessionStateChangedNotification = @"com.facebook.Scrumptious:S
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
 	[FBSession.activeSession handleDidBecomeActive];
+	
+	PFQuery *dailyQuery = [PFQuery queryWithClassName:@"DailyChallenges"];
+	PFObject *dailyObject = [dailyQuery getObjectWithId:@"X0JSNV39lu"];
+	
+	[[NSUserDefaults standardUserDefaults] setObject:[dailyObject objectForKey:@"subject_name"] forKey:@"daily_subject"];
+	[[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (void)applicationWillTerminate:(UIApplication *)application {

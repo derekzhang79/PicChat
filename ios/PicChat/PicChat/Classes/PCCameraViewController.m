@@ -85,6 +85,7 @@
 	
 //	UIImageView *secondAnimation = [AnimatedGif getAnimationForGifAtUrl:[NSURL URLWithString:@"http://www.allweb.it/images/4_Humor/emoticon_3d/emoticon_3d_53.gif"]];
 //	[self.view addSubview:secondAnimation];
+	
 }
 
 - (void)viewDidLoad {
@@ -168,6 +169,13 @@
 		
 		[self.navigationController presentViewController:_imagePicker animated:NO completion:nil];
 	}
+	
+//	if (FBSession.activeSession.state != 513) {
+//		UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:[[PCLoginViewController alloc] init]];
+//		[navigationController setNavigationBarHidden:YES];
+//		[self presentViewController:navigationController animated:YES completion:nil];
+//		
+//	}
 }
 
 - (void)_showOverlay {

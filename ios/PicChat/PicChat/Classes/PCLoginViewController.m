@@ -69,7 +69,18 @@
 }
 
 - (void)_goDone {
-	[self dismissViewControllerAnimated:YES completion:nil];
+	[self dismissViewControllerAnimated:YES completion:^(void) {
+		if ([[[NSUserDefaults standardUserDefaults] objectForKey:@"first_login"] isEqualToString:@"YES"])
+			[[NSNotificationCenter defaultCenter] postNotificationName:@"PROCEED_TO_CAMERA" object:nil];//[self performSelector:@selector(_openCamera) withObject:nil afterDelay:0.5];
+		
+		[[NSUserDefaults standardUserDefaults] setObject:@"NO" forKey:@"first_login"];
+		[[NSUserDefaults standardUserDefaults] synchronize];
+	}];
+}
+
+- (void)_openCamera {
+	NSLog(@"_openCamera");
+	[[NSNotificationCenter defaultCenter] postNotificationName:@"PROCEED_TO_CAMERA" object:nil];
 }
 
 #pragma mark - Navigation
@@ -94,7 +105,7 @@
 							  [friends addObject: [friend objectForKey:@"id"]];
 						  }
 						  
-						  NSLog(@"RETRIEVED FRIENDS");
+						  //NSLog(@"RETRIEVED FRIENDS");
 						  [PCAppDelegate storeFBFriends:friends];
 					  }];
 					  
@@ -114,7 +125,7 @@
 							  NSLog(@"Failed to parse job list JSON: %@", [error localizedFailureReason]);
 						  
 						  else {
-							  NSLog(@"USER: %@", userResult);
+							  //NSLog(@"USER: %@", userResult);
 							  
 							  if ([userResult objectForKey:@"id"] != [NSNull null])
 								  [PCAppDelegate writeUserInfo:userResult];
