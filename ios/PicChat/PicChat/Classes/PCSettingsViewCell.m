@@ -71,12 +71,12 @@
 }
 
 - (void)didSelect {
-	_bgImgView.image = [UIImage imageNamed:@"genericRowBackgroundnoImage_active.png"];
+	_bgImgView.image = [UIImage imageNamed:@"blankRowBackground_Active.png"];
 	[self performSelector:@selector(_resetBG) withObject:nil afterDelay:0.33];
 }
 
 - (void)_resetBG {
-	_bgImgView.image = [UIImage imageNamed:@"commonTableRow_nonActive.png"];
+	_bgImgView.image = [UIImage imageNamed:@"blankRowBackground_nonActive.png"];
 }
 
 - (void)_goSupport {
